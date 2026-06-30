@@ -1,82 +1,91 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { 
-  LayoutDashboard, 
-  Upload, 
-  FileCode, 
-  Smartphone, 
-  Network, 
-  GitBranch, 
-  Sparkles, 
+  Home, 
+  Clock, 
+  Bug, 
   ShieldAlert, 
-  History, 
+  FileCode, 
+  RefreshCw, 
   Settings, 
-  FileCheck,
-  LogOut,
-  Building2,
-  Lock
+  Info,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
+import { Logo } from './Logo';
 
 interface SidebarProps {
   currentView: string;
   onNavigate: (view: string) => void;
-  onLogout: () => void;
-  userEmail: string;
+  onLogout?: () => void;
+  userEmail?: string;
+  isOpen: boolean;
+  onToggle: () => void;
 }
 
 export default function Sidebar({ 
   currentView, 
-  onNavigate, 
-  onLogout,
-  userEmail 
+  onNavigate,
+  isOpen,
+  onToggle
 }: SidebarProps) {
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onToggle();
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [isOpen, onToggle]);
   
   const menuItems = [
-    { id: 'dashboard', label: 'Security Dashboard', icon: LayoutDashboard },
-    { id: 'analyze', label: 'APK Analysis Pipeline', icon: Upload },
-    { id: 'static', label: 'Static Manifest Audit', icon: FileCode },
-    { id: 'dynamic', label: 'Dynamic Sandbox Run', icon: Smartphone },
-    { id: 'intel', label: 'Threat Intelligence Feeds', icon: Network },
-    { id: 'fraud', label: 'Banking Fraud Mapping', icon: GitBranch },
-    { id: 'investigate', label: 'Gemini Forensics', icon: Sparkles },
-    { id: 'risk', label: 'Vulnerability Index', icon: ShieldAlert },
-    { id: 'reports', label: 'Executive Dossier', icon: FileCheck },
-    { id: 'history', label: 'Assessment History', icon: History },
-    { id: 'settings', label: 'System Configuration', icon: Settings },
+    { id: 'dashboard', label: 'Dashboard', icon: Home },
+    { id: 'analyze', label: 'Upload & Analyze', icon: Bug },
+    { id: 'static-analysis', label: 'Static Analysis', icon: FileCode },
+    { id: 'sandbox', label: 'Dynamic Sandbox', icon: RefreshCw },
+    { id: 'threat-intel', label: 'Threat Intelligence', icon: ShieldAlert },
+    { id: 'investigate', label: 'AI Investigation', icon: Info },
+    { id: 'risk', label: 'Risk Reports', icon: ShieldAlert },
+    { id: 'history', label: 'Recent History', icon: Clock },
+    { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
-  // Try to parse bank association from user email or default to SBI
-  const getBankAssociation = (email: string) => {
-    if (email.toLowerCase().includes('sbi')) return 'State Bank of India';
-    if (email.toLowerCase().includes('hdfc')) return 'HDFC Bank Ltd';
-    if (email.toLowerCase().includes('icici')) return 'ICICI Bank Corp';
-    if (email.toLowerCase().includes('boi')) return 'Bank of India';
-    return 'SBI Security Ops';
-  };
-
-  const bankName = getBankAssociation(userEmail);
-
   return (
-    <aside className="w-64 bg-[#0F172A] border-r border-slate-800 text-slate-300 flex flex-col justify-between h-screen sticky top-0 font-sans flex-shrink-0" id="enterprise-sidebar">
-      <div className="flex flex-col overflow-y-auto">
-        {/* Brand Logo Header */}
-        <div className="p-5 border-b border-slate-800 flex items-center space-x-3.5">
-          <div className="p-2 bg-[#2563EB] text-white rounded-lg flex items-center justify-center flex-shrink-0 shadow-md">
-            <Lock className="h-5 w-5" />
-          </div>
-          <div>
-            <h1 className="text-sm font-black tracking-wider text-white uppercase leading-none">ThreatLens AI</h1>
-            <span className="text-[10px] font-mono text-slate-500 block mt-1 tracking-widest font-extrabold">SECURE COMPILER</span>
-          </div>
-        </div>
+    <>
+      {/* Mobile Backdrop */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-[45] bg-[#050b14]/50 backdrop-blur-sm md:hidden"
+          onClick={onToggle}
+        />
+      )}
 
-        {/* Bank Context Tag */}
-        <div className="px-5 py-3.5 bg-slate-900/50 flex items-center space-x-2 border-b border-slate-800/40">
-          <Building2 className="h-4 w-4 text-[#2563EB] flex-shrink-0" />
-          <span className="text-xs font-bold text-slate-400 truncate tracking-wide">{bankName}</span>
+      <aside 
+        className={`
+          fixed md:sticky top-0 left-0 h-screen z-[50] flex flex-col flex-shrink-0 transition-all duration-500 ease-in-out shadow-glass bg-white/70 backdrop-blur-3xl border-r border-white/50 text-slate-700 font-sans
+          ${isOpen ? 'w-64 translate-x-0' : 'w-64 -translate-x-full md:w-20 md:translate-x-0'}
+        `} 
+        id="enterprise-sidebar"
+      >
+        {/* Side Handle - Desktop Only */}
+        <button 
+          onClick={onToggle}
+          className="hidden md:flex absolute -right-3 top-8 h-6 w-6 bg-white/40 backdrop-blur-xl border border-white/50 rounded-full items-center justify-center text-slate-500 hover:text-[#0F357E] hover:scale-110 shadow-sm z-50 transition-all cursor-pointer"
+        >
+          {isOpen ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+        </button>
+
+      <div className="flex flex-col flex-grow overflow-y-auto overflow-x-hidden">
+        {/* Brand Logo Header */}
+        <div className={`p-6 flex items-center ${isOpen ? 'space-x-3' : 'justify-center px-0'} mb-2 transition-all duration-500`}>
+          <div className="flex items-center group cursor-pointer hover-lift">
+            <Logo className="h-10 w-10 flex-shrink-0 drop-shadow-md group-hover:scale-105 transition-transform" />
+            {isOpen && <h1 className="text-2xl font-black tracking-tight text-gradient ml-3 whitespace-nowrap drop-shadow-sm">ThreatLens</h1>}
+          </div>
         </div>
 
         {/* Menu Navigation */}
-        <nav className="p-4 space-y-1.5 flex-grow">
+        <nav className="space-y-0 flex-grow">
           {menuItems.map((item) => {
             const IconComponent = item.icon;
             const isActive = currentView === item.id;
@@ -85,40 +94,24 @@ export default function Sidebar({
               <button
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
-                className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                title={!isOpen ? item.label : undefined}
+                className={`w-full flex items-center ${isOpen ? 'px-6' : 'justify-center px-0'} py-3.5 text-[14px] font-medium transition-all duration-300 ease-out cursor-pointer relative group ${
                   isActive 
-                    ? 'bg-[#2563EB] text-white shadow-md font-extrabold' 
-                    : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/60'
+                    ? 'bg-white/60 text-[#0F357E] font-bold shadow-sm backdrop-blur-sm' 
+                    : 'text-slate-600 hover:bg-white/40 hover:text-slate-900'
                 }`}
               >
-                <IconComponent className={`h-4 w-4 flex-shrink-0 ${isActive ? 'text-white' : 'text-slate-500'}`} />
-                <span className="truncate">{item.label}</span>
+                {isActive && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 h-4/5 w-1.5 rounded-r-md bg-gradient-to-b from-[#0F357E] to-[#38BDF8] shadow-[0_0_8px_rgba(56,189,248,0.5)] transition-all duration-300" />
+                )}
+                <IconComponent className={`h-[20px] w-[20px] flex-shrink-0 transition-transform duration-300 group-hover:scale-110 ${isActive ? 'text-[#0F357E] scale-110' : 'text-slate-500'}`} />
+                {isOpen && <span className="ml-4 truncate whitespace-nowrap group-hover:translate-x-1 transition-transform duration-300">{item.label}</span>}
               </button>
             );
           })}
         </nav>
       </div>
-
-      {/* User profile footer */}
-      <div className="p-4 border-t border-slate-800 space-y-3.5">
-        <div className="flex items-center space-x-3 min-w-0">
-          <div className="h-8 w-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-[#2563EB] border border-slate-700 uppercase flex-shrink-0">
-            {userEmail.substring(0, 2)}
-          </div>
-          <div className="min-w-0 flex-grow">
-            <div className="text-xs font-extrabold text-white truncate">{userEmail}</div>
-            <div className="text-[9px] font-mono text-slate-500 uppercase font-black">CISO Administrator</div>
-          </div>
-        </div>
-
-        <button
-          onClick={onLogout}
-          className="w-full py-2 bg-slate-800/50 hover:bg-[#DC2626] hover:text-white border border-slate-700 hover:border-[#DC2626] rounded-lg text-xs font-bold uppercase tracking-widest text-slate-400 transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
-        >
-          <LogOut className="h-3.5 w-3.5" />
-          <span>Exit System</span>
-        </button>
-      </div>
     </aside>
+    </>
   );
 }

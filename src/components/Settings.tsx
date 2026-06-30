@@ -46,7 +46,7 @@ export default function Settings({ triggerToast }: SettingsProps) {
   return (
     <div className="space-y-6 font-sans text-[#0F172A]" id="system-settings-page">
       {/* Title Header */}
-      <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm flex items-center justify-between">
+      <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass flex items-center justify-between">
         <div>
           <h2 className="text-xl font-extrabold tracking-tight">SOC System Settings</h2>
           <p className="text-sm text-slate-500 mt-1">Configure automated reporting thresholds, Gemini API credentials, and active financial defense targets</p>
@@ -61,7 +61,7 @@ export default function Settings({ triggerToast }: SettingsProps) {
         {/* Core settings form */}
         <form onSubmit={handleSaveConfigs} className="lg:col-span-2 space-y-6">
           {/* API Keys */}
-          <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm space-y-4">
+          <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass space-y-4">
             <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center space-x-2">
               <Key className="h-4 w-4 text-[#2563EB]" />
               <span>External API Integrations</span>
@@ -74,7 +74,7 @@ export default function Settings({ triggerToast }: SettingsProps) {
                   type="password"
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-slate-50 border border-[#E2E8F0] rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#2563EB] text-slate-700"
+                  className="w-full px-3.5 py-2 bg-white/40 backdrop-blur-md border border-[#E2E8F0] rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#2563EB] text-slate-700"
                 />
                 <span className="text-[10px] text-slate-400 block mt-0.5">Required for real-time decompiler summaries.</span>
               </div>
@@ -85,7 +85,7 @@ export default function Settings({ triggerToast }: SettingsProps) {
                   type="text"
                   value={vtKey}
                   onChange={(e) => setVtKey(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-slate-50 border border-[#E2E8F0] rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#2563EB] text-slate-700 font-mono"
+                  className="w-full px-3.5 py-2 bg-white/40 backdrop-blur-md border border-[#E2E8F0] rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#2563EB] text-slate-700 font-mono"
                 />
                 <span className="text-[10px] text-slate-400 block mt-0.5">Used for matching compiled checksum logs.</span>
               </div>
@@ -93,7 +93,7 @@ export default function Settings({ triggerToast }: SettingsProps) {
           </div>
 
           {/* Threshold configurations */}
-          <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm space-y-4">
+          <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass space-y-4">
             <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center space-x-2">
               <BellRing className="h-4 w-4 text-[#F59E0B]" />
               <span>Automated CERT-In Report Thresholds</span>
@@ -124,7 +124,7 @@ export default function Settings({ triggerToast }: SettingsProps) {
                   max="120"
                   value={sandboxTimeout}
                   onChange={(e) => setSandboxTimeout(Number(e.target.value))}
-                  className="w-full px-3.5 py-2 bg-slate-50 border border-[#E2E8F0] rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#2563EB] text-slate-700 font-mono"
+                  className="w-full px-3.5 py-2 bg-white/40 backdrop-blur-md border border-[#E2E8F0] rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#2563EB] text-slate-700 font-mono"
                 />
                 <span className="text-[10px] text-slate-400 block">Determines standard timeout for dynamic thread traces.</span>
               </div>
@@ -133,14 +133,14 @@ export default function Settings({ triggerToast }: SettingsProps) {
 
           <button
             type="submit"
-            className="px-5 py-3 bg-[#2563EB] hover:bg-[#2563EB]/90 text-white text-xs font-bold uppercase tracking-widest rounded-lg shadow-sm transition-all cursor-pointer"
+            className="px-5 py-3 bg-[#2563EB] hover:bg-[#2563EB]/90 text-white text-xs font-bold uppercase tracking-widest rounded-lg shadow-glass transition-all cursor-pointer"
           >
             Save SOC Configurations
           </button>
         </form>
 
         {/* Right defended institutions selection card */}
-        <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm space-y-4">
+        <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass space-y-4">
           <div>
             <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center space-x-2">
               <Building2 className="h-4 w-4 text-[#16A34A]" />
@@ -154,7 +154,7 @@ export default function Settings({ triggerToast }: SettingsProps) {
               onClick={() => toggleBank('sbi')}
               type="button"
               className={`w-full p-3 border rounded-xl flex items-center justify-between text-xs transition-all cursor-pointer ${
-                defendedBanks.sbi ? 'border-[#16A34A] bg-[#16A34A]/5 font-bold' : 'border-slate-200 bg-white text-slate-400'
+                defendedBanks.sbi ? 'border-[#16A34A] bg-[#16A34A]/5 font-bold' : 'border-white/40 bg-white/20 backdrop-blur-xl text-slate-400'
               }`}
             >
               <span>State Bank of India (SBI)</span>
@@ -165,7 +165,7 @@ export default function Settings({ triggerToast }: SettingsProps) {
               onClick={() => toggleBank('hdfc')}
               type="button"
               className={`w-full p-3 border rounded-xl flex items-center justify-between text-xs transition-all cursor-pointer ${
-                defendedBanks.hdfc ? 'border-[#16A34A] bg-[#16A34A]/5 font-bold' : 'border-slate-200 bg-white text-slate-400'
+                defendedBanks.hdfc ? 'border-[#16A34A] bg-[#16A34A]/5 font-bold' : 'border-white/40 bg-white/20 backdrop-blur-xl text-slate-400'
               }`}
             >
               <span>HDFC Bank Limited</span>
@@ -176,7 +176,7 @@ export default function Settings({ triggerToast }: SettingsProps) {
               onClick={() => toggleBank('icici')}
               type="button"
               className={`w-full p-3 border rounded-xl flex items-center justify-between text-xs transition-all cursor-pointer ${
-                defendedBanks.icici ? 'border-[#16A34A] bg-[#16A34A]/5 font-bold' : 'border-slate-200 bg-white text-slate-400'
+                defendedBanks.icici ? 'border-[#16A34A] bg-[#16A34A]/5 font-bold' : 'border-white/40 bg-white/20 backdrop-blur-xl text-slate-400'
               }`}
             >
               <span>ICICI Bank Corporation</span>
@@ -187,7 +187,7 @@ export default function Settings({ triggerToast }: SettingsProps) {
               onClick={() => toggleBank('boi')}
               type="button"
               className={`w-full p-3 border rounded-xl flex items-center justify-between text-xs transition-all cursor-pointer ${
-                defendedBanks.boi ? 'border-[#16A34A] bg-[#16A34A]/5 font-bold' : 'border-slate-200 bg-white text-slate-400'
+                defendedBanks.boi ? 'border-[#16A34A] bg-[#16A34A]/5 font-bold' : 'border-white/40 bg-white/20 backdrop-blur-xl text-slate-400'
               }`}
             >
               <span>Bank of India (BOI)</span>
@@ -198,7 +198,7 @@ export default function Settings({ triggerToast }: SettingsProps) {
               onClick={() => toggleBank('canara')}
               type="button"
               className={`w-full p-3 border rounded-xl flex items-center justify-between text-xs transition-all cursor-pointer ${
-                defendedBanks.canara ? 'border-[#16A34A] bg-[#16A34A]/5 font-bold' : 'border-slate-200 bg-white text-slate-400'
+                defendedBanks.canara ? 'border-[#16A34A] bg-[#16A34A]/5 font-bold' : 'border-white/40 bg-white/20 backdrop-blur-xl text-slate-400'
               }`}
             >
               <span>Canara Bank</span>
@@ -209,7 +209,7 @@ export default function Settings({ triggerToast }: SettingsProps) {
               onClick={() => toggleBank('kotak')}
               type="button"
               className={`w-full p-3 border rounded-xl flex items-center justify-between text-xs transition-all cursor-pointer ${
-                defendedBanks.kotak ? 'border-[#16A34A] bg-[#16A34A]/5 font-bold' : 'border-slate-200 bg-white text-slate-400'
+                defendedBanks.kotak ? 'border-[#16A34A] bg-[#16A34A]/5 font-bold' : 'border-white/40 bg-white/20 backdrop-blur-xl text-slate-400'
               }`}
             >
               <span>Kotak Mahindra Bank</span>

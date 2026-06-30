@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import { APKReport, TimelineEvent } from '../types';
 import { mockTimelineEvents } from '../mockData';
+import { useAppStore } from '../lib/store';
+import { PaywallOverlay } from './PaywallOverlay';
 
 interface DynamicSandboxProps {
   apkReports: APKReport[];
@@ -29,8 +31,11 @@ export default function DynamicSandbox({
   apkReports, 
   selectedAPKId, 
   onSelectAPK,
-  triggerToast
-}: DynamicSandboxProps) {
+  triggerToast,
+  onUpgrade
+}: DynamicSandboxProps & { onUpgrade?: () => void }) {
+  const { isProUser } = useAppStore();
+  
   const currentId = selectedAPKId || 'apk-01';
   const report = apkReports.find(r => r.id === currentId) || apkReports[0];
 
@@ -137,9 +142,18 @@ export default function DynamicSandbox({
   };
 
   return (
-    <div className="space-y-6 font-sans text-[#0F172A]" id="dynamic-sandbox-page">
+    <div className="relative">
+      {!isProUser && (
+        <PaywallOverlay 
+          featureName="Dynamic Hardware Sandbox"
+          description="Real-time execution of evasive 0-day payloads requires dedicated hardware virtualization nodes. Upgrade to Premium to instantly spin up isolated environments and trace memory hooks live."
+          onUpgrade={() => onUpgrade?.()}
+        />
+      )}
+      
+      <div className={`space-y-6 ${!isProUser ? 'opacity-40 pointer-events-none select-none blur-sm' : ''} font-sans text-[#0F172A]`} id="dynamic-sandbox-page">
       {/* Top Selector Card */}
-      <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h2 className="text-xl font-extrabold tracking-tight">Dynamic Sandbox Environment</h2>
           <p className="text-sm text-slate-500 mt-1">Run threat packages inside simulated device containers to record live execution vectors and trace accessibility APIs</p>
@@ -149,7 +163,7 @@ export default function DynamicSandbox({
           <select 
             value={report.id}
             onChange={(e) => onSelectAPK(e.target.value)}
-            className="px-3 py-2 bg-slate-50 border border-[#E2E8F0] rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:ring-1 focus:ring-[#2563EB] max-w-[280px]"
+            className="px-3 py-2 bg-white/40 backdrop-blur-md border border-[#E2E8F0] rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:ring-1 focus:ring-[#2563EB] max-w-[280px]"
           >
             {apkReports.map(r => (
               <option key={r.id} value={r.id}>{r.filename} ({r.riskLevel})</option>
@@ -161,7 +175,7 @@ export default function DynamicSandbox({
       {/* Control Station & Live Device */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Side: Dynamic Control panel & Metrics */}
-        <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm space-y-6">
+        <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass space-y-6">
           <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-700">Sandbox Control Desk</h3>
           
           {/* Controls */}
@@ -169,7 +183,7 @@ export default function DynamicSandbox({
             {!isRunning ? (
               <button
                 onClick={startSandbox}
-                className="w-full py-3 bg-[#16A34A] hover:bg-[#16A34A]/90 text-white text-xs font-bold uppercase tracking-widest rounded-lg shadow-sm transition-all flex items-center justify-center space-x-2 cursor-pointer"
+                className="w-full py-3 bg-[#16A34A] hover:bg-[#16A34A]/90 text-white text-xs font-bold uppercase tracking-widest rounded-lg shadow-glass transition-all flex items-center justify-center space-x-2 cursor-pointer"
               >
                 <Play className="h-4 w-4" />
                 <span>Deploy & Execute Sandbox</span>
@@ -177,7 +191,7 @@ export default function DynamicSandbox({
             ) : (
               <button
                 onClick={stopSandbox}
-                className="w-full py-3 bg-[#DC2626] hover:bg-[#DC2626]/90 text-white text-xs font-bold uppercase tracking-widest rounded-lg shadow-sm transition-all flex items-center justify-center space-x-2 cursor-pointer"
+                className="w-full py-3 bg-[#DC2626] hover:bg-[#DC2626]/90 text-white text-xs font-bold uppercase tracking-widest rounded-lg shadow-glass transition-all flex items-center justify-center space-x-2 cursor-pointer"
               >
                 <Square className="h-4 w-4" />
                 <span>Halt Active Simulation</span>
@@ -187,7 +201,7 @@ export default function DynamicSandbox({
             <button
               onClick={clearSandbox}
               disabled={visibleEvents.length === 0}
-              className="w-full py-2 bg-white hover:bg-slate-50 disabled:bg-slate-50 border border-[#E2E8F0] rounded-lg text-xs font-semibold text-slate-700 shadow-sm transition-all flex items-center justify-center space-x-1.5 cursor-pointer disabled:opacity-50"
+              className="w-full py-2 bg-white/20 backdrop-blur-xl hover:bg-white/40 backdrop-blur-md disabled:bg-white/40 backdrop-blur-md border border-[#E2E8F0] rounded-lg text-xs font-semibold text-slate-700 shadow-glass transition-all flex items-center justify-center space-x-1.5 cursor-pointer disabled:opacity-50"
             >
               <RefreshCw className="h-3.5 w-3.5" />
               <span>Clear Terminal logs</span>
@@ -195,7 +209,7 @@ export default function DynamicSandbox({
           </div>
 
           {/* Sandbox Status Badge */}
-          <div className="p-4 bg-slate-50 rounded-xl border border-[#E2E8F0] flex items-center justify-between">
+          <div className="p-4 bg-white/40 backdrop-blur-md rounded-xl border border-[#E2E8F0] flex items-center justify-between">
             <span className="text-xs font-extrabold text-slate-500 uppercase tracking-widest">Container State:</span>
             <span className={`inline-flex items-center space-x-1.5 font-mono text-xs font-bold uppercase ${
               isRunning ? 'text-[#16A34A] animate-pulse' : 'text-slate-500'
@@ -210,32 +224,32 @@ export default function DynamicSandbox({
             <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold block">Telemetry Scrapers</span>
             
             <div className="grid grid-cols-2 gap-3.5">
-              <div className="p-3 bg-slate-50 rounded-lg border border-[#E2E8F0] text-center">
+              <div className="p-3 bg-white/40 backdrop-blur-md rounded-lg border border-[#E2E8F0] text-center">
                 <FileText className="h-4 w-4 text-[#2563EB] mx-auto mb-1" />
                 <div className="text-lg font-bold tracking-tight">{stats.fileWrites}</div>
                 <div className="text-[9px] uppercase font-mono tracking-wider text-slate-400 font-bold">File Writes</div>
               </div>
 
-              <div className="p-3 bg-slate-50 rounded-lg border border-[#E2E8F0] text-center">
+              <div className="p-3 bg-white/40 backdrop-blur-md rounded-lg border border-[#E2E8F0] text-center">
                 <Globe className="h-4 w-4 text-[#16A34A] mx-auto mb-1" />
                 <div className="text-lg font-bold tracking-tight">{stats.networkRequests}</div>
                 <div className="text-[9px] uppercase font-mono tracking-wider text-slate-400 font-bold">Network Req</div>
               </div>
 
-              <div className="p-3 bg-slate-50 rounded-lg border border-[#E2E8F0] text-center">
+              <div className="p-3 bg-white/40 backdrop-blur-md rounded-lg border border-[#E2E8F0] text-center">
                 <Accessibility className="h-4 w-4 text-[#F59E0B] mx-auto mb-1" />
                 <div className="text-lg font-bold tracking-tight">{stats.accessibilityAbuses}</div>
                 <div className="text-[9px] uppercase font-mono tracking-wider text-slate-400 font-bold">Access Hook</div>
               </div>
 
-              <div className="p-3 bg-slate-50 rounded-lg border border-[#E2E8F0] text-center">
+              <div className="p-3 bg-white/40 backdrop-blur-md rounded-lg border border-[#E2E8F0] text-center">
                 <MessageSquare className="h-4 w-4 text-[#DC2626] mx-auto mb-1" />
                 <div className="text-lg font-bold tracking-tight">{stats.smsInterceptions}</div>
                 <div className="text-[9px] uppercase font-mono tracking-wider text-slate-400 font-bold">SMS Sniffed</div>
               </div>
             </div>
 
-            <div className="p-3 bg-slate-50 rounded-lg border border-[#E2E8F0] flex items-center justify-between text-xs">
+            <div className="p-3 bg-white/40 backdrop-blur-md rounded-lg border border-[#E2E8F0] flex items-center justify-between text-xs">
               <div className="flex items-center space-x-2">
                 <Eye className="h-4 w-4 text-[#2563EB]" />
                 <span className="font-bold text-slate-700">Fake Overlays Spawned</span>
@@ -246,8 +260,8 @@ export default function DynamicSandbox({
         </div>
 
         {/* Right Side: Execution trace timeline */}
-        <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm lg:col-span-2 flex flex-col space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass lg:col-span-2 flex flex-col space-y-4">
+          <div className="flex items-center justify-between border-b border-white/30 pb-3">
             <div>
               <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-700">Trace Logs & Runtime Thread</h3>
               <span className="text-xs text-slate-400">Chronological list of background service hooks</span>
@@ -261,7 +275,7 @@ export default function DynamicSandbox({
           {/* Scrolling timeline trace */}
           <div className="flex-grow min-h-96 max-h-[500px] overflow-y-auto pr-1 space-y-3 scrollbar-thin">
             {visibleEvents.length === 0 ? (
-              <div className="h-96 flex flex-col items-center justify-center text-center p-6 border border-dashed border-[#E2E8F0] rounded-xl bg-slate-50">
+              <div className="h-96 flex flex-col items-center justify-center text-center p-6 border border-dashed border-[#E2E8F0] rounded-xl bg-white/40 backdrop-blur-md">
                 <Terminal className="h-12 w-12 text-slate-300 mb-3" />
                 <p className="text-sm font-bold text-slate-600">Sandbox Ready for Deployment</p>
                 <p className="text-xs text-slate-400 max-w-sm mt-1">Deploy the APK package to initialize active hardware-isolated monitors. The sandbox logs live telemetry callbacks including overlay hooks and OTP interceptions.</p>
@@ -273,7 +287,7 @@ export default function DynamicSandbox({
                     case 'Critical': return 'bg-[#DC2626]/10 text-[#DC2626] border-[#DC2626]/10';
                     case 'Warning': return 'bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/10';
                     case 'Alert': return 'bg-[#2563EB]/10 text-[#2563EB] border-[#2563EB]/10';
-                    default: return 'bg-slate-100 text-slate-500 border-slate-200';
+                    default: return 'bg-white/60 backdrop-blur-lg text-slate-500 border-white/40';
                   }
                 };
 
@@ -290,7 +304,7 @@ export default function DynamicSandbox({
                 return (
                   <div 
                     key={event.id}
-                    className="p-3.5 bg-white border border-[#E2E8F0] rounded-lg shadow-sm hover:shadow transition-all flex items-start space-x-3.5 group"
+                    className="p-3.5 bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded-lg shadow-glass hover:shadow transition-all flex items-start space-x-3.5 group"
                   >
                     {/* Timestamp column */}
                     <div className="flex items-center space-x-1 text-slate-400 font-mono text-[10px] font-bold mt-0.5 flex-shrink-0">
@@ -319,6 +333,7 @@ export default function DynamicSandbox({
             )}
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

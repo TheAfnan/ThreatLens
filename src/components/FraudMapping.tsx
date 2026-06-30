@@ -75,7 +75,7 @@ export default function FraudMapping() {
   return (
     <div className="space-y-6 font-sans text-[#0F172A]" id="fraud-mapping-page">
       {/* Title Header */}
-      <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm flex items-center justify-between">
+      <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass flex items-center justify-between">
         <div>
           <h2 className="text-xl font-extrabold tracking-tight">Banking Fraud Mapping</h2>
           <p className="text-sm text-slate-500 mt-1">Interactive flowchart tracking how Android Trojans execute multi-phase banking theft and bypass SMS two-factor verification</p>
@@ -87,11 +87,11 @@ export default function FraudMapping() {
       </div>
 
       {/* INTERACTIVE FLOWCHART NODES */}
-      <div className="bg-white p-6 rounded-xl border border-[#E2E8F0] shadow-sm space-y-6">
+      <div className="bg-white/20 backdrop-blur-xl p-6 rounded-xl border border-[#E2E8F0] shadow-glass space-y-6">
         <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold block text-center sm:text-left">Click a node to audit threat vectors</span>
         
         {/* Horizontal Node Flow */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-2 pt-2 pb-6 border-b border-slate-100 overflow-x-auto">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-2 pt-2 pb-6 border-b border-white/30 overflow-x-auto">
           {fraudSteps.map((step, idx) => {
             const StepIcon = step.icon;
             const isActive = idx === activeStep;
@@ -104,7 +104,7 @@ export default function FraudMapping() {
                   className={`w-full md:w-48 p-4 rounded-xl border text-left transition-all cursor-pointer relative ${
                     isActive 
                       ? 'border-[#2563EB] bg-[#2563EB]/5 shadow-md ring-2 ring-[#2563EB]/10' 
-                      : 'border-[#E2E8F0] hover:border-slate-300 bg-white shadow-sm'
+                      : 'border-[#E2E8F0] hover:border-slate-300 bg-white/20 backdrop-blur-xl shadow-glass'
                   }`}
                 >
                   <div className="flex items-center space-x-3">
@@ -148,7 +148,7 @@ export default function FraudMapping() {
 
             {/* Technical analysis blocks */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 bg-slate-50 border border-[#E2E8F0] rounded-xl space-y-1.5">
+              <div className="p-4 bg-white/40 backdrop-blur-md border border-[#E2E8F0] rounded-xl space-y-1.5">
                 <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest font-bold flex items-center space-x-1">
                   <ShieldAlert className="h-3.5 w-3.5 text-[#DC2626]" />
                   <span>How Trojan Executes</span>
@@ -166,7 +166,7 @@ export default function FraudMapping() {
             </div>
 
             {/* Active campaigns match */}
-            <div className="p-3.5 bg-slate-50 border border-[#E2E8F0] rounded-xl flex items-center justify-between text-xs font-mono">
+            <div className="p-3.5 bg-white/40 backdrop-blur-md border border-[#E2E8F0] rounded-xl flex items-center justify-between text-xs font-mono">
               <span className="text-slate-400 font-bold uppercase text-[10px]">Identified Matching Campaigns:</span>
               <span className="text-slate-700 font-extrabold text-[#DC2626] uppercase">{currentDetail.threatMatch}</span>
             </div>

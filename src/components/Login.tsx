@@ -106,7 +106,7 @@ export default function Login({ onLogin }: LoginProps) {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-white border border-[#E2E8F0] rounded-lg text-sm text-[#0F172A] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded-lg text-sm text-[#0F172A] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all"
                   placeholder="name@institution.com"
                 />
               </div>
@@ -126,7 +126,7 @@ export default function Login({ onLogin }: LoginProps) {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-white border border-[#E2E8F0] rounded-lg text-sm text-[#0F172A] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded-lg text-sm text-[#0F172A] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all"
                   placeholder="••••••••••••"
                 />
               </div>
@@ -178,7 +178,7 @@ export default function Login({ onLogin }: LoginProps) {
             <button
               type="button"
               onClick={() => onLogin('sso.ciso.officer@sbi.co.in')}
-              className="w-full py-2.5 px-4 bg-white border border-[#E2E8F0] hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-semibold shadow-sm transition-all flex items-center justify-center space-x-2 cursor-pointer"
+              className="w-full py-2.5 px-4 bg-white/20 backdrop-blur-xl border border-[#E2E8F0] hover:bg-white/40 backdrop-blur-md text-slate-700 rounded-lg text-xs font-semibold shadow-glass transition-all flex items-center justify-center space-x-2 cursor-pointer"
             >
               <span>Authenticate using Hardware Security Key (SSO / YubiKey)</span>
             </button>

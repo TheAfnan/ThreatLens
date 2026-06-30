@@ -116,7 +116,7 @@ export default function RiskReports({
   return (
     <div className="space-y-6 font-sans text-[#0F172A]" id="risk-score-page">
       {/* Selector Header Bar */}
-      <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h2 className="text-xl font-extrabold tracking-tight">Vulnerability & Risk Indexing</h2>
           <p className="text-sm text-slate-500 mt-1">Review the mathematical scoring breakdown and threat weights applied to decompiled source packages</p>
@@ -126,7 +126,7 @@ export default function RiskReports({
           <select 
             value={report.id}
             onChange={(e) => onSelectAPK(e.target.value)}
-            className="px-3 py-2 bg-slate-50 border border-[#E2E8F0] rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:ring-1 focus:ring-[#2563EB] max-w-[280px]"
+            className="px-3 py-2 bg-white/40 backdrop-blur-md border border-[#E2E8F0] rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:ring-1 focus:ring-[#2563EB] max-w-[280px]"
           >
             {apkReports.map(r => (
               <option key={r.id} value={r.id}>{r.filename} ({r.riskLevel})</option>
@@ -137,7 +137,7 @@ export default function RiskReports({
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Left Circular Gauge */}
-        <div className="bg-white p-6 rounded-xl border border-[#E2E8F0] shadow-sm flex flex-col items-center justify-center text-center space-y-6">
+        <div className="bg-white/20 backdrop-blur-xl p-6 rounded-xl border border-[#E2E8F0] shadow-glass flex flex-col items-center justify-center text-center space-y-6">
           <div className="space-y-1">
             <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-700">Calculated Security Risk</h3>
             <span className="text-xs text-slate-400">Threat weight compilation index</span>
@@ -181,7 +181,7 @@ export default function RiskReports({
           </div>
 
           {/* Risk Level guide */}
-          <div className="w-full grid grid-cols-5 gap-1.5 pt-4 text-center text-[10px] font-bold border-t border-slate-100 font-mono">
+          <div className="w-full grid grid-cols-5 gap-1.5 pt-4 text-center text-[10px] font-bold border-t border-white/30 font-mono">
             <div className="space-y-1">
               <span className="h-2 w-full rounded-full bg-[#16A34A] block opacity-40" />
               <span className="text-slate-400">Safe</span>
@@ -206,7 +206,7 @@ export default function RiskReports({
         </div>
 
         {/* Right Details: Scoring Factors */}
-        <div className="bg-white p-6 rounded-xl border border-[#E2E8F0] shadow-sm md:col-span-2 space-y-6 flex flex-col justify-between">
+        <div className="bg-white/20 backdrop-blur-xl p-6 rounded-xl border border-[#E2E8F0] shadow-glass md:col-span-2 space-y-6 flex flex-col justify-between">
           <div className="space-y-4">
             <div>
               <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-700">Threat Weight Factors</h3>
@@ -218,7 +218,7 @@ export default function RiskReports({
               {riskReasons.map((reason, idx) => (
                 <div 
                   key={idx}
-                  className="p-3.5 bg-slate-50 border border-[#E2E8F0] rounded-xl flex items-start justify-between gap-4 hover:border-slate-300 transition-all"
+                  className="p-3.5 bg-white/40 backdrop-blur-md border border-[#E2E8F0] rounded-xl flex items-start justify-between gap-4 hover:border-slate-300 transition-all"
                 >
                   <div className="space-y-1">
                     <h4 className="text-xs font-extrabold text-slate-800">{reason.title}</h4>
@@ -238,11 +238,11 @@ export default function RiskReports({
           </div>
 
           {/* Action CTA */}
-          <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="pt-4 border-t border-white/30 flex flex-col sm:flex-row items-center justify-between gap-4">
             <span className="text-xs text-slate-500 font-mono">ID: SEC_RISK_AUDIT_MATCH_TLS_2026</span>
             <button
               onClick={() => onNavigateToReport(report.id)}
-              className="w-full sm:w-auto px-4 py-2.5 bg-[#2563EB] hover:bg-[#2563EB]/90 text-white text-xs font-bold uppercase tracking-wider rounded-lg shadow-sm transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
+              className="w-full sm:w-auto px-4 py-2.5 bg-[#2563EB] hover:bg-[#2563EB]/90 text-white text-xs font-bold uppercase tracking-wider rounded-lg shadow-glass transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
             >
               <FileCheck className="h-4 w-4" />
               <span>Generate Comprehensive PDF Report</span>

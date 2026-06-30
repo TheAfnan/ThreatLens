@@ -73,15 +73,13 @@ export default function APKAnalysis({
     setDragActive(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const file = e.dataTransfer.files[0];
-      handleFileSelected(file.name, file.size);
+      handleFileSelected(e.dataTransfer.files[0]);
     }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      handleFileSelected(file.name, file.size);
+      handleFileSelected(e.target.files[0]);
     }
   };
 
@@ -94,7 +92,9 @@ export default function APKAnalysis({
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   };
 
-  const handleFileSelected = (name: string, sizeInBytes: number) => {
+  const handleFileSelected = (file: File) => {
+    const name = file.name;
+    const sizeInBytes = file.size;
     setSelectedFile({
       name,
       size: formatBytes(sizeInBytes),
@@ -103,17 +103,37 @@ export default function APKAnalysis({
     setUploadProgress(0);
     setIsUploading(true);
 
-    // Simulate file upload progress
+    const formData = new FormData();
+    formData.append('apk', file);
+    
+    // Simulate progress while uploading
     let progress = 0;
-    const interval = setInterval(() => {
-      progress += 10;
-      setUploadProgress(progress);
-      if (progress >= 100) {
-        clearInterval(interval);
-        setIsUploading(false);
+    const progressInterval = setInterval(() => {
+      progress += Math.random() * 15;
+      if (progress > 90) progress = 90;
+      setUploadProgress(Math.floor(progress));
+    }, 200);
+
+    fetch('/api/upload', {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+      setIsUploading(false);
+      if (data.success) {
         triggerToast('Upload Succeeded', `Verified integrity hash of ${name}`, 'success');
+      } else {
+        triggerToast('Upload Failed', data.error || 'Server rejected file', 'error');
       }
-    }, 150);
+    })
+    .catch(err => {
+      clearInterval(progressInterval);
+      setIsUploading(false);
+      triggerToast('Upload Error', 'Network failure connecting to Sandbox node', 'error');
+    });
   };
 
   // Quick Select Presets
@@ -236,12 +256,12 @@ export default function APKAnalysis({
   return (
     <div className="space-y-6 font-sans text-[#0F172A]" id="apk-analysis-page">
       {/* Page Title Header */}
-      <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm flex items-center justify-between">
+      <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass flex items-center justify-between">
         <div>
           <h2 className="text-xl font-extrabold tracking-tight">APK Reverse Engineering & Verification</h2>
           <p className="text-sm text-slate-500 mt-1">Submit Android packages (APK, ZIP, AAB) to compile secure static manifests and execute timeline tests</p>
         </div>
-        <div className="flex items-center space-x-1 text-xs font-mono bg-slate-100 px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-slate-600">
+        <div className="flex items-center space-x-1 text-xs font-mono bg-white/60 backdrop-blur-lg px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-slate-600">
           <Database className="h-3.5 w-3.5" />
           <span>REVERSE_ENGINE: ACTIVE</span>
         </div>
@@ -249,7 +269,7 @@ export default function APKAnalysis({
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Side: Drag and Drop & presets */}
-        <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm space-y-6">
+        <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass space-y-6">
           <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-700">Submit Application</h3>
           
           {/* Drag & drop box */}
@@ -260,7 +280,7 @@ export default function APKAnalysis({
             onDrop={handleDrop}
             onClick={handleOpenUploadClick}
             className={`h-64 border-2 border-dashed rounded-xl flex flex-col items-center justify-center p-6 text-center cursor-pointer transition-all ${
-              dragActive ? 'border-[#2563EB] bg-[#2563EB]/5' : 'border-[#E2E8F0] hover:border-slate-400 bg-slate-50'
+              dragActive ? 'border-[#2563EB] bg-[#2563EB]/5' : 'border-[#E2E8F0] hover:border-slate-400 bg-white/40 backdrop-blur-md'
             }`}
           >
             <input 
@@ -270,14 +290,14 @@ export default function APKAnalysis({
               accept=".apk,.zip,.aab"
               onChange={handleFileChange}
             />
-            <div className="p-3 bg-white rounded-full border border-[#E2E8F0] shadow-sm text-slate-500 mb-4">
+            <div className="p-3 bg-white/20 backdrop-blur-xl rounded-full border border-[#E2E8F0] shadow-glass text-slate-500 mb-4">
               <Upload className="h-6 w-6 text-[#2563EB]" />
             </div>
             <p className="text-sm font-bold text-slate-700">Drag & Drop file here</p>
             <p className="text-xs text-slate-400 mt-1">Accepts .APK, .ZIP (source decompiles), or .AAB files</p>
             <button 
               type="button"
-              className="mt-4 px-3.5 py-1.5 bg-white border border-[#E2E8F0] hover:bg-slate-50 rounded-lg text-xs font-semibold text-slate-700 shadow-sm transition-all"
+              className="mt-4 px-3.5 py-1.5 bg-white/20 backdrop-blur-xl border border-[#E2E8F0] hover:bg-white/40 backdrop-blur-md rounded-lg text-xs font-semibold text-slate-700 shadow-glass transition-all"
             >
               Browse Files
             </button>
@@ -289,7 +309,7 @@ export default function APKAnalysis({
             <div className="grid grid-cols-1 gap-2.5">
               <button
                 onClick={() => handleSelectPreset('SBI_Yono_Mandatory_Upgrade_2026.apk', '14.8 MB')}
-                className="p-2.5 bg-slate-50 hover:bg-slate-100 border border-[#E2E8F0] rounded-lg text-left text-xs font-semibold flex items-center justify-between cursor-pointer group"
+                className="p-2.5 bg-white/40 backdrop-blur-md hover:bg-white/60 backdrop-blur-lg border border-[#E2E8F0] rounded-lg text-left text-xs font-semibold flex items-center justify-between cursor-pointer group"
               >
                 <div className="truncate pr-2">
                   <div className="text-slate-800 font-bold truncate">SBI_Yono_Mandatory_Upgrade_2026.apk</div>
@@ -300,7 +320,7 @@ export default function APKAnalysis({
 
               <button
                 onClick={() => handleSelectPreset('HDFC_KYC_Verification.apk', '8.4 MB')}
-                className="p-2.5 bg-slate-50 hover:bg-slate-100 border border-[#E2E8F0] rounded-lg text-left text-xs font-semibold flex items-center justify-between cursor-pointer group"
+                className="p-2.5 bg-white/40 backdrop-blur-md hover:bg-white/60 backdrop-blur-lg border border-[#E2E8F0] rounded-lg text-left text-xs font-semibold flex items-center justify-between cursor-pointer group"
               >
                 <div className="truncate pr-2">
                   <div className="text-slate-800 font-bold truncate">HDFC_KYC_Verification.apk</div>
@@ -311,7 +331,7 @@ export default function APKAnalysis({
 
               <button
                 onClick={() => handleSelectPreset('Kotak_811_Fast_Verification.apk', '9.3 MB')}
-                className="p-2.5 bg-slate-50 hover:bg-slate-100 border border-[#E2E8F0] rounded-lg text-left text-xs font-semibold flex items-center justify-between cursor-pointer group"
+                className="p-2.5 bg-white/40 backdrop-blur-md hover:bg-white/60 backdrop-blur-lg border border-[#E2E8F0] rounded-lg text-left text-xs font-semibold flex items-center justify-between cursor-pointer group"
               >
                 <div className="truncate pr-2">
                   <div className="text-slate-800 font-bold truncate">Kotak_811_Fast_Verification.apk</div>
@@ -324,12 +344,12 @@ export default function APKAnalysis({
         </div>
 
         {/* Right Side: Meta and Pipeline progress */}
-        <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm lg:col-span-2 space-y-6">
+        <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass lg:col-span-2 space-y-6">
           <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-700">Analysis pipeline control</h3>
 
           {/* If no selected file */}
           {!selectedFile && (
-            <div className="h-96 flex flex-col items-center justify-center text-center p-6 border border-[#E2E8F0] rounded-xl bg-slate-50">
+            <div className="h-96 flex flex-col items-center justify-center text-center p-6 border border-[#E2E8F0] rounded-xl bg-white/40 backdrop-blur-md">
               <FileCode className="h-12 w-12 text-slate-300 mb-3" />
               <p className="text-sm font-bold text-slate-600">No file loaded</p>
               <p className="text-xs text-slate-400 max-w-sm mt-1">Please upload an Android package or select one of the high-risk testing presets on the left to activate the decompilation pipeline.</p>
@@ -340,7 +360,7 @@ export default function APKAnalysis({
           {selectedFile && (
             <div className="space-y-6">
               {/* Meta Box */}
-              <div className="p-4 bg-slate-50 rounded-xl border border-[#E2E8F0] flex items-center justify-between">
+              <div className="p-4 bg-white/40 backdrop-blur-md rounded-xl border border-[#E2E8F0] flex items-center justify-between">
                 <div className="flex items-center space-x-3.5 min-w-0">
                   <div className="p-2.5 bg-[#2563EB]/10 text-[#2563EB] rounded-lg flex-shrink-0">
                     <FileCode className="h-6 w-6" />
@@ -372,7 +392,7 @@ export default function APKAnalysis({
 
               {/* Upload Progress Bar */}
               {isUploading && (
-                <div className="w-full bg-slate-100 rounded-full h-1.5">
+                <div className="w-full bg-white/60 backdrop-blur-lg rounded-full h-1.5">
                   <div 
                     className="bg-[#2563EB] h-1.5 rounded-full transition-all duration-150" 
                     style={{ width: `${uploadProgress}%` }}
@@ -384,7 +404,7 @@ export default function APKAnalysis({
               {!isUploading && !isAnalyzing && !generatedReportId && (
                 <button
                   onClick={startAnalysisPipeline}
-                  className="w-full py-3 bg-[#2563EB] hover:bg-[#2563EB]/90 text-white text-xs font-bold uppercase tracking-widest rounded-lg shadow-sm transition-all flex items-center justify-center space-x-2 cursor-pointer"
+                  className="w-full py-3 bg-[#2563EB] hover:bg-[#2563EB]/90 text-white text-xs font-bold uppercase tracking-widest rounded-lg shadow-glass transition-all flex items-center justify-center space-x-2 cursor-pointer"
                 >
                   <Sparkles className="h-4 w-4" />
                   <span>Execute Decompilation & AI Reverse Engineering</span>
@@ -409,7 +429,7 @@ export default function APKAnalysis({
                           <div className={`p-2.5 rounded-full mb-2 ${
                             isCompleted ? 'bg-[#16A34A]/10 text-[#16A34A]' :
                             isActive ? 'bg-[#2563EB]/10 text-[#2563EB] ring-2 ring-[#2563EB]/20 animate-pulse' :
-                            'bg-slate-100 text-slate-400'
+                            'bg-white/60 backdrop-blur-lg text-slate-400'
                           }`}>
                             <StepIcon className="h-4 w-4" />
                           </div>
@@ -474,7 +494,7 @@ export default function APKAnalysis({
                         </button>
                         <button
                           onClick={() => onSelectAPK(generatedReportId, 'static')}
-                          className="px-3.5 py-2 bg-white hover:bg-slate-50 border border-[#E2E8F0] text-slate-700 text-xs font-bold uppercase tracking-wider rounded shadow-sm transition-all cursor-pointer"
+                          className="px-3.5 py-2 bg-white/20 backdrop-blur-xl hover:bg-white/40 backdrop-blur-md border border-[#E2E8F0] text-slate-700 text-xs font-bold uppercase tracking-wider rounded shadow-glass transition-all cursor-pointer"
                         >
                           <span>View Static Accordion</span>
                         </button>

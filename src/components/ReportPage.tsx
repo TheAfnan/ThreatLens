@@ -48,7 +48,7 @@ export default function ReportPage({
   return (
     <div className="space-y-6 font-sans text-[#0F172A]" id="pdf-report-page">
       {/* Top Controls Bar (hidden during printing) */}
-      <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 print:hidden">
+      <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 print:hidden">
         <div>
           <h2 className="text-xl font-extrabold tracking-tight">Executive Security Dossier</h2>
           <p className="text-sm text-slate-500 mt-1">Generate a board-ready physical PDF report compiling CERT-In guidelines, Trojan payloads, and signature indicators</p>
@@ -58,7 +58,7 @@ export default function ReportPage({
           <select 
             value={report.id}
             onChange={(e) => onSelectAPK(e.target.value)}
-            className="px-3 py-2 bg-slate-50 border border-[#E2E8F0] rounded-lg text-xs font-semibold text-slate-700 focus:outline-none max-w-[200px]"
+            className="px-3 py-2 bg-white/40 backdrop-blur-md border border-[#E2E8F0] rounded-lg text-xs font-semibold text-slate-700 focus:outline-none max-w-[200px]"
           >
             {apkReports.map(r => (
               <option key={r.id} value={r.id}>{r.filename}</option>
@@ -67,7 +67,7 @@ export default function ReportPage({
 
           <button
             onClick={handlePrint}
-            className="px-4 py-2 bg-[#2563EB] hover:bg-[#2563EB]/90 text-white text-xs font-bold uppercase tracking-wider rounded-lg shadow-sm transition-all flex items-center space-x-1.5 cursor-pointer"
+            className="px-4 py-2 bg-[#2563EB] hover:bg-[#2563EB]/90 text-white text-xs font-bold uppercase tracking-wider rounded-lg shadow-glass transition-all flex items-center space-x-1.5 cursor-pointer"
           >
             <Printer className="h-4 w-4" />
             <span>Print Report</span>
@@ -75,7 +75,7 @@ export default function ReportPage({
 
           <button
             onClick={handleExportJSON}
-            className="px-3.5 py-2 bg-white hover:bg-slate-50 border border-[#E2E8F0] text-slate-700 text-xs font-bold uppercase tracking-wider rounded-lg shadow-sm transition-all flex items-center space-x-1.5 cursor-pointer"
+            className="px-3.5 py-2 bg-white/20 backdrop-blur-xl hover:bg-white/40 backdrop-blur-md border border-[#E2E8F0] text-slate-700 text-xs font-bold uppercase tracking-wider rounded-lg shadow-glass transition-all flex items-center space-x-1.5 cursor-pointer"
           >
             <Download className="h-4 w-4" />
             <span>Export Raw JSON</span>
@@ -84,7 +84,7 @@ export default function ReportPage({
       </div>
 
       {/* PAPER DOCUMENT CONTAINER */}
-      <div className="bg-white border border-[#D1D5DB] rounded-none shadow-xl max-w-4xl mx-auto p-12 space-y-12 print:border-none print:shadow-none print:p-0" id="formal-pdf-canvas">
+      <div className="bg-white/20 backdrop-blur-xl border border-[#D1D5DB] rounded-none shadow-xl max-w-4xl mx-auto p-12 space-y-12 print:border-none print:shadow-none print:p-0" id="formal-pdf-canvas">
         {/* Classified Header */}
         <div className="flex items-center justify-between border-b-2 border-[#1E3A8A] pb-4">
           <div className="flex items-center space-x-3">
@@ -114,7 +114,7 @@ export default function ReportPage({
             </p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 bg-slate-50 border border-slate-200">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 bg-white/40 backdrop-blur-md border border-white/40">
             <div className="space-y-1">
               <span className="text-[9px] font-mono uppercase font-black text-slate-400">Target Platform</span>
               <div className="text-xs font-bold text-slate-800">Android OS API v34+</div>
@@ -136,25 +136,25 @@ export default function ReportPage({
 
         {/* SECTION 1: Hashes & Signatures */}
         <div className="space-y-3.5">
-          <h3 className="text-xs font-black uppercase tracking-wider text-[#1E3A8A] border-b border-slate-200 pb-1.5 flex items-center space-x-1.5">
+          <h3 className="text-xs font-black uppercase tracking-wider text-[#1E3A8A] border-b border-white/40 pb-1.5 flex items-center space-x-1.5">
             <Award className="h-4 w-4" />
             <span>1. Package Integrity & Hash Summary</span>
           </h3>
 
           <div className="space-y-2 text-xs">
-            <div className="grid grid-cols-3 gap-2 py-1.5 border-b border-slate-100">
+            <div className="grid grid-cols-3 gap-2 py-1.5 border-b border-white/30">
               <span className="font-mono text-slate-400 font-bold">Package Name</span>
               <span className="col-span-2 font-mono font-bold text-slate-800">{report.packageName}</span>
             </div>
-            <div className="grid grid-cols-3 gap-2 py-1.5 border-b border-slate-100">
+            <div className="grid grid-cols-3 gap-2 py-1.5 border-b border-white/30">
               <span className="font-mono text-slate-400 font-bold">Application Size</span>
               <span className="col-span-2 font-bold text-slate-800">{report.size}</span>
             </div>
-            <div className="grid grid-cols-3 gap-2 py-1.5 border-b border-slate-100">
+            <div className="grid grid-cols-3 gap-2 py-1.5 border-b border-white/30">
               <span className="font-mono text-slate-400 font-bold">Package Checksum (SHA256)</span>
               <span className="col-span-2 font-mono font-bold text-slate-800 break-all">{report.hash}</span>
             </div>
-            <div className="grid grid-cols-3 gap-2 py-1.5 border-b border-slate-100">
+            <div className="grid grid-cols-3 gap-2 py-1.5 border-b border-white/30">
               <span className="font-mono text-slate-400 font-bold">Signing Issuer</span>
               <span className="col-span-2 font-mono font-bold text-[#DC2626] break-all">{report.certInfo.issuer}</span>
             </div>
@@ -163,15 +163,15 @@ export default function ReportPage({
 
         {/* SECTION 2: Permission Audit */}
         <div className="space-y-4">
-          <h3 className="text-xs font-black uppercase tracking-wider text-[#1E3A8A] border-b border-slate-200 pb-1.5 flex items-center space-x-1.5">
+          <h3 className="text-xs font-black uppercase tracking-wider text-[#1E3A8A] border-b border-white/40 pb-1.5 flex items-center space-x-1.5">
             <Shield className="h-4 w-4" />
             <span>2. Dangerous API Permissions Audit</span>
           </h3>
 
-          <div className="border border-slate-200 rounded overflow-hidden">
+          <div className="border border-white/40 rounded overflow-hidden">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-slate-100 border-b border-slate-200 font-mono text-[9px] font-black uppercase text-slate-500">
+                <tr className="bg-white/60 backdrop-blur-lg border-b border-white/40 font-mono text-[9px] font-black uppercase text-slate-500">
                   <th className="p-2.5">Declared Android Permission</th>
                   <th className="p-2.5 text-center">Threat Rating</th>
                   <th className="p-2.5">Documented Abuse Vectors inside Phishing campaigns</th>
@@ -183,7 +183,7 @@ export default function ReportPage({
                     <td className="p-2.5 font-mono font-bold break-all max-w-[200px]">{perm.name}</td>
                     <td className="p-2.5 text-center">
                       <span className={`px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase ${
-                        perm.dangerous ? 'bg-[#DC2626]/10 text-[#DC2626]' : 'bg-slate-100 text-slate-500'
+                        perm.dangerous ? 'bg-[#DC2626]/10 text-[#DC2626]' : 'bg-white/60 backdrop-blur-lg text-slate-500'
                       }`}>
                         {perm.dangerous ? 'Dangerous' : 'Standard'}
                       </span>
@@ -200,7 +200,7 @@ export default function ReportPage({
 
         {/* SECTION 3: Extracted IoCs */}
         <div className="space-y-4">
-          <h3 className="text-xs font-black uppercase tracking-wider text-[#1E3A8A] border-b border-slate-200 pb-1.5 flex items-center space-x-1.5">
+          <h3 className="text-xs font-black uppercase tracking-wider text-[#1E3A8A] border-b border-white/40 pb-1.5 flex items-center space-x-1.5">
             <ShieldAlert className="h-4 w-4" />
             <span>3. Embedded C2 Servers & Cryptographic Keys</span>
           </h3>
@@ -209,9 +209,9 @@ export default function ReportPage({
             {/* Left URL block */}
             <div className="space-y-2">
               <span className="text-[9px] font-mono uppercase tracking-widest text-slate-400 font-black">Identified blacklisted domains</span>
-              <div className="border border-slate-200 rounded divide-y divide-slate-200">
+              <div className="border border-white/40 rounded divide-y divide-slate-200">
                 {report.extractedUrls.map((link, i) => (
-                  <div key={i} className="p-2.5 bg-white space-y-1">
+                  <div key={i} className="p-2.5 bg-white/20 backdrop-blur-xl space-y-1">
                     <div className="font-mono font-bold text-slate-800 break-all">{link.url}</div>
                     <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
                       <span>TYPE: {link.category}</span>
@@ -225,12 +225,12 @@ export default function ReportPage({
             {/* Right Keys block */}
             <div className="space-y-2">
               <span className="text-[9px] font-mono uppercase tracking-widest text-slate-400 font-black">Decompiled Cryptographic Keys</span>
-              <div className="border border-slate-200 rounded divide-y divide-slate-200">
+              <div className="border border-white/40 rounded divide-y divide-slate-200">
                 {report.hardcodedKeys.length > 0 ? (
                   report.hardcodedKeys.map((key, i) => (
-                    <div key={i} className="p-2.5 bg-white space-y-1">
+                    <div key={i} className="p-2.5 bg-white/20 backdrop-blur-xl space-y-1">
                       <div className="font-bold text-slate-700">{key.type}</div>
-                      <div className="font-mono text-[10px] text-slate-500 break-all bg-slate-50 p-1 rounded border border-slate-100">{key.key}</div>
+                      <div className="font-mono text-[10px] text-slate-500 break-all bg-white/40 backdrop-blur-md p-1 rounded border border-white/30">{key.key}</div>
                     </div>
                   ))
                 ) : (
@@ -251,7 +251,7 @@ export default function ReportPage({
 
           {/* Official Seal Design */}
           <div className="flex flex-col items-center justify-center text-center p-3 border-2 border-[#1E3A8A] rounded-full w-24 h-24 text-[#1E3A8A] font-mono font-bold text-[8px] tracking-tight relative leading-none">
-            <span className="absolute -top-1.5 bg-white px-1 text-[7px] font-black uppercase text-[#1E3A8A]">APPROVED</span>
+            <span className="absolute -top-1.5 bg-white/20 backdrop-blur-xl px-1 text-[7px] font-black uppercase text-[#1E3A8A]">APPROVED</span>
             <Building2 className="h-5 w-5 mb-1 text-[#1E3A8A]" />
             <span>THREATLENS</span>
             <span>SECURE SEAL</span>

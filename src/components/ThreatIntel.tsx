@@ -14,8 +14,11 @@ import {
   Database
 } from 'lucide-react';
 import { mockThreatIndicators } from '../mockData';
+import PremiumLock from './PremiumLock';
 
-export default function ThreatIntel() {
+export default function ThreatIntel({ onUpgrade }: { onUpgrade?: () => void }) {
+  return <PremiumLock onUpgrade={onUpgrade} featureName="Global Threat Intel Feeds" description="Streaming live IOCs (Indicators of Compromise) and real-time malicious signatures from global honeypots is restricted to Enterprise networks. Upgrade to connect to the live grid and solve zero-day threats instantly." />;
+
   const [activeFeed, setActiveFeed] = useState<'vt' | 'cert' | 'mitre' | 'yara' | 'cve'>('vt');
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState<'ALL' | 'IP' | 'Domain' | 'Hash' | 'Certificate'>('ALL');
@@ -55,7 +58,7 @@ export default function ThreatIntel() {
   return (
     <div className="space-y-6 font-sans text-[#0F172A]" id="threat-intel-intelligence">
       {/* Title Header */}
-      <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm flex items-center justify-between">
+      <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass flex items-center justify-between">
         <div>
           <h2 className="text-xl font-extrabold tracking-tight">External Threat Intelligence Feeds</h2>
           <p className="text-sm text-slate-500 mt-1">Cross-reference local APK artifacts with global cybersecurity databases, CERT-In logs, and MITRE behavioral indexes</p>
@@ -79,13 +82,13 @@ export default function ThreatIntel() {
               }}
               className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
                 isActive 
-                  ? 'border-[#2563EB] bg-[#2563EB]/5 shadow-sm' 
-                  : 'border-[#E2E8F0] hover:border-slate-300 bg-white'
+                  ? 'border-[#2563EB] bg-[#2563EB]/5 shadow-glass' 
+                  : 'border-[#E2E8F0] hover:border-slate-300 bg-white/20 backdrop-blur-xl'
               }`}
             >
               <div className="flex items-center justify-between">
                 <span className={`text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 rounded ${
-                  isActive ? 'bg-[#2563EB] text-white' : 'bg-slate-100 text-slate-500'
+                  isActive ? 'bg-[#2563EB] text-white' : 'bg-white/60 backdrop-blur-lg text-slate-500'
                 }`}>{feed.logo}</span>
                 <ExternalLink className="h-3 w-3 text-slate-300" />
               </div>
@@ -97,9 +100,9 @@ export default function ThreatIntel() {
       </div>
 
       {/* CENTRAL INTEL DASHBOARD */}
-      <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm space-y-5">
+      <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass space-y-5">
         {/* Active Feed Stats Card */}
-        <div className="p-4 bg-slate-50 rounded-xl border border-[#E2E8F0] flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="p-4 bg-white/40 backdrop-blur-md rounded-xl border border-[#E2E8F0] flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="space-y-1">
             <h3 className="text-sm font-extrabold text-slate-800">
               {feeds.find(f => f.id === activeFeed)?.name} Integration
@@ -120,11 +123,11 @@ export default function ThreatIntel() {
                 placeholder="Search indicators..."
                 value={searchTerm}
                 onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-                className="pl-8 pr-3 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-[#2563EB] w-48"
+                className="pl-8 pr-3 py-1.5 bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded-lg text-xs placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-[#2563EB] w-48"
               />
             </div>
 
-            <div className="flex items-center space-x-1.5 bg-white px-2 py-1 border border-[#E2E8F0] rounded-lg">
+            <div className="flex items-center space-x-1.5 bg-white/20 backdrop-blur-xl px-2 py-1 border border-[#E2E8F0] rounded-lg">
               <Filter className="h-3 w-3 text-slate-400" />
               <select
                 value={typeFilter}
@@ -158,12 +161,12 @@ export default function ThreatIntel() {
               <tbody className="divide-y divide-[#E2E8F0]">
                 {paginatedIndicators.length > 0 ? (
                   paginatedIndicators.map((ind) => (
-                    <tr key={ind.id} className="hover:bg-slate-50 transition-colors font-sans text-slate-700">
+                    <tr key={ind.id} className="hover:bg-white/40 backdrop-blur-md transition-colors font-sans text-slate-700">
                       <td className="py-3 font-mono font-semibold text-[#0F172A] break-all max-w-[280px]" title={ind.value}>
                         {ind.value}
                       </td>
                       <td className="py-3">
-                        <span className="px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded text-[9px] font-bold font-mono">
+                        <span className="px-1.5 py-0.5 bg-white/60 backdrop-blur-lg text-slate-600 rounded text-[9px] font-bold font-mono">
                           {ind.type}
                         </span>
                       </td>
@@ -173,7 +176,7 @@ export default function ThreatIntel() {
                       </td>
                       <td className="py-3 text-center">
                         <div className="font-bold font-mono text-[#2563EB]">{ind.confidence}%</div>
-                        <div className="w-16 bg-slate-100 h-1 rounded-full mx-auto overflow-hidden mt-1">
+                        <div className="w-16 bg-white/60 backdrop-blur-lg h-1 rounded-full mx-auto overflow-hidden mt-1">
                           <div className="bg-[#2563EB] h-1" style={{ width: `${ind.confidence}%` }} />
                         </div>
                       </td>
@@ -204,7 +207,7 @@ export default function ThreatIntel() {
 
           {/* PAGINATION PANEL */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between border-t border-slate-100 pt-3 text-xs">
+            <div className="flex items-center justify-between border-t border-white/30 pt-3 text-xs">
               <span className="text-slate-500">
                 Showing Page <span className="font-semibold text-slate-700">{currentPage}</span> of <span className="font-semibold text-slate-700">{totalPages}</span> ({filteredIndicators.length} IoCs matched)
               </span>
@@ -212,14 +215,14 @@ export default function ThreatIntel() {
                 <button
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                  className="p-1 border border-[#E2E8F0] rounded hover:bg-slate-50 cursor-pointer disabled:opacity-40"
+                  className="p-1 border border-[#E2E8F0] rounded hover:bg-white/40 backdrop-blur-md cursor-pointer disabled:opacity-40"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
                 <button
                   disabled={currentPage === totalPages}
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                  className="p-1 border border-[#E2E8F0] rounded hover:bg-slate-50 cursor-pointer disabled:opacity-40"
+                  className="p-1 border border-[#E2E8F0] rounded hover:bg-white/40 backdrop-blur-md cursor-pointer disabled:opacity-40"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </button>

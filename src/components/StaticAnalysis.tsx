@@ -57,7 +57,7 @@ export default function StaticAnalysis({
   return (
     <div className="space-y-6 font-sans text-[#0F172A]" id="static-analysis-panel">
       {/* Selector Header Bar */}
-      <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h2 className="text-xl font-extrabold tracking-tight">Static Manifest Inspection</h2>
           <p className="text-sm text-slate-500 mt-1">Audit decompiled package code, structural resources, and permission maps</p>
@@ -67,7 +67,7 @@ export default function StaticAnalysis({
           <select 
             value={report.id}
             onChange={(e) => onSelectAPK(e.target.value)}
-            className="px-3 py-2 bg-slate-50 border border-[#E2E8F0] rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:ring-1 focus:ring-[#2563EB] max-w-[280px]"
+            className="px-3 py-2 bg-white/40 backdrop-blur-md border border-[#E2E8F0] rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:ring-1 focus:ring-[#2563EB] max-w-[280px]"
           >
             {apkReports.map(r => (
               <option key={r.id} value={r.id}>{r.filename} ({r.riskLevel})</option>
@@ -77,7 +77,7 @@ export default function StaticAnalysis({
       </div>
 
       {/* APK Meta Card */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-5 bg-white rounded-xl border border-[#E2E8F0] shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-5 bg-white/20 backdrop-blur-xl rounded-xl border border-[#E2E8F0] shadow-glass">
         <div className="space-y-1">
           <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest font-bold">Package Identifier</span>
           <div className="text-xs font-mono font-bold text-slate-800 break-all">{report.packageName}</div>
@@ -106,10 +106,10 @@ export default function StaticAnalysis({
       </div>
 
       {/* ACCORDION 1: Permissions */}
-      <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded-xl shadow-glass overflow-hidden">
         <button
           onClick={() => toggleAccordion('permissions')}
-          className="w-full p-4 flex items-center justify-between hover:bg-slate-50 transition-colors text-left font-bold"
+          className="w-full p-4 flex items-center justify-between hover:bg-white/40 backdrop-blur-md transition-colors text-left font-bold"
         >
           <div className="flex items-center space-x-3">
             <Shield className={`h-5 w-5 ${dangerousPermissions.length > 0 ? 'text-[#DC2626]' : 'text-[#16A34A]'}`} />
@@ -122,7 +122,7 @@ export default function StaticAnalysis({
         </button>
 
         {openAccordions.permissions && (
-          <div className="p-5 border-t border-[#E2E8F0] bg-slate-50/50 space-y-4">
+          <div className="p-5 border-t border-[#E2E8F0] bg-white/40 backdrop-blur-md/50 space-y-4">
             {/* Dangerous list */}
             {dangerousPermissions.length > 0 && (
               <div className="space-y-2.5">
@@ -153,7 +153,7 @@ export default function StaticAnalysis({
                 <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold block">Standard / low-risk permissions</span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                   {normalPermissions.map((perm, idx) => (
-                    <div key={idx} className="p-3 bg-white border border-[#E2E8F0] rounded-lg">
+                    <div key={idx} className="p-3 bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded-lg">
                       <span className="font-mono text-[11px] font-bold text-slate-700 truncate block" title={perm.name}>{perm.name}</span>
                       <p className="text-[11px] text-slate-500 mt-1">{perm.description}</p>
                     </div>
@@ -166,10 +166,10 @@ export default function StaticAnalysis({
       </div>
 
       {/* ACCORDION 2: Manifest components (Activities, Services, Receivers) */}
-      <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded-xl shadow-glass overflow-hidden">
         <button
           onClick={() => toggleAccordion('manifest')}
-          className="w-full p-4 flex items-center justify-between hover:bg-slate-50 transition-colors text-left font-bold"
+          className="w-full p-4 flex items-center justify-between hover:bg-white/40 backdrop-blur-md transition-colors text-left font-bold"
         >
           <div className="flex items-center space-x-3">
             <FileCode className="h-5 w-5 text-[#2563EB]" />
@@ -182,13 +182,13 @@ export default function StaticAnalysis({
         </button>
 
         {openAccordions.manifest && (
-          <div className="p-5 border-t border-[#E2E8F0] bg-slate-50/50 grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="p-5 border-t border-[#E2E8F0] bg-white/40 backdrop-blur-md/50 grid grid-cols-1 md:grid-cols-3 gap-5">
             {/* Activities */}
             <div className="space-y-2">
               <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-bold block border-b border-[#E2E8F0] pb-1">Activities (UI Screens)</span>
               <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
                 {report.manifest.activities.map((act, i) => (
-                  <div key={i} className="p-2 bg-white border border-[#E2E8F0] rounded font-mono text-[11px] text-slate-700 flex items-center space-x-1.5 truncate">
+                  <div key={i} className="p-2 bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded font-mono text-[11px] text-slate-700 flex items-center space-x-1.5 truncate">
                     <span className="h-1.5 w-1.5 bg-[#2563EB] rounded-full flex-shrink-0" />
                     <span className="truncate">{act}</span>
                   </div>
@@ -201,7 +201,7 @@ export default function StaticAnalysis({
               <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-bold block border-b border-[#E2E8F0] pb-1">Services (Background Tasks)</span>
               <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
                 {report.manifest.services.map((ser, i) => (
-                  <div key={i} className="p-2 bg-white border border-[#E2E8F0] rounded font-mono text-[11px] text-slate-700 flex items-center space-x-1.5 truncate">
+                  <div key={i} className="p-2 bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded font-mono text-[11px] text-slate-700 flex items-center space-x-1.5 truncate">
                     <span className="h-1.5 w-1.5 bg-[#F59E0B] rounded-full flex-shrink-0" />
                     <span className="truncate">{ser}</span>
                   </div>
@@ -215,7 +215,7 @@ export default function StaticAnalysis({
               <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
                 {report.manifest.receivers.length > 0 ? (
                   report.manifest.receivers.map((rec, i) => (
-                    <div key={i} className="p-2 bg-white border border-[#E2E8F0] rounded font-mono text-[11px] text-slate-700 flex items-center space-x-1.5 truncate">
+                    <div key={i} className="p-2 bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded font-mono text-[11px] text-slate-700 flex items-center space-x-1.5 truncate">
                       <span className="h-1.5 w-1.5 bg-[#DC2626] rounded-full flex-shrink-0" />
                       <span className="truncate">{rec}</span>
                     </div>
@@ -230,10 +230,10 @@ export default function StaticAnalysis({
       </div>
 
       {/* ACCORDION 3: Extracted URLs & Domains */}
-      <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded-xl shadow-glass overflow-hidden">
         <button
           onClick={() => toggleAccordion('urls')}
-          className="w-full p-4 flex items-center justify-between hover:bg-slate-50 transition-colors text-left font-bold"
+          className="w-full p-4 flex items-center justify-between hover:bg-white/40 backdrop-blur-md transition-colors text-left font-bold"
         >
           <div className="flex items-center space-x-3">
             <Globe className="h-5 w-5 text-[#2563EB]" />
@@ -246,10 +246,10 @@ export default function StaticAnalysis({
         </button>
 
         {openAccordions.urls && (
-          <div className="p-5 border-t border-[#E2E8F0] bg-slate-50/50">
+          <div className="p-5 border-t border-[#E2E8F0] bg-white/40 backdrop-blur-md/50">
             <div className="grid grid-cols-1 gap-2.5">
               {report.extractedUrls.map((link, idx) => (
-                <div key={idx} className="p-3 bg-white border border-[#E2E8F0] rounded-lg flex items-center justify-between flex-wrap gap-2">
+                <div key={idx} className="p-3 bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded-lg flex items-center justify-between flex-wrap gap-2">
                   <div className="flex items-center space-x-2.5 min-w-0">
                     <span className={`p-1 rounded ${
                       link.category === 'C2 Server' ? 'bg-[#DC2626]/10 text-[#DC2626]' :
@@ -279,10 +279,10 @@ export default function StaticAnalysis({
       </div>
 
       {/* ACCORDION 4: Suspicious APIs */}
-      <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded-xl shadow-glass overflow-hidden">
         <button
           onClick={() => toggleAccordion('apis')}
-          className="w-full p-4 flex items-center justify-between hover:bg-slate-50 transition-colors text-left font-bold"
+          className="w-full p-4 flex items-center justify-between hover:bg-white/40 backdrop-blur-md transition-colors text-left font-bold"
         >
           <div className="flex items-center space-x-3">
             <Cpu className="h-5 w-5 text-[#F59E0B]" />
@@ -295,10 +295,10 @@ export default function StaticAnalysis({
         </button>
 
         {openAccordions.apis && (
-          <div className="p-5 border-t border-[#E2E8F0] bg-slate-50/50 space-y-3">
+          <div className="p-5 border-t border-[#E2E8F0] bg-white/40 backdrop-blur-md/50 space-y-3">
             {report.suspiciousApis.length > 0 ? (
               report.suspiciousApis.map((api, idx) => (
-                <div key={idx} className="p-3.5 bg-white border border-[#E2E8F0] rounded-lg flex items-start justify-between gap-3">
+                <div key={idx} className="p-3.5 bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded-lg flex items-start justify-between gap-3">
                   <div className="space-y-1">
                     <div className="font-mono text-xs font-bold text-slate-800 break-all">{api.api}</div>
                     <div className="text-xs text-slate-500 font-medium">{api.purpose}</div>
@@ -321,10 +321,10 @@ export default function StaticAnalysis({
       </div>
 
       {/* ACCORDION 5: Hardcoded Cryptographic Keys */}
-      <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded-xl shadow-glass overflow-hidden">
         <button
           onClick={() => toggleAccordion('keys')}
-          className="w-full p-4 flex items-center justify-between hover:bg-slate-50 transition-colors text-left font-bold"
+          className="w-full p-4 flex items-center justify-between hover:bg-white/40 backdrop-blur-md transition-colors text-left font-bold"
         >
           <div className="flex items-center space-x-3">
             <Key className="h-5 w-5 text-[#2563EB]" />
@@ -337,23 +337,23 @@ export default function StaticAnalysis({
         </button>
 
         {openAccordions.keys && (
-          <div className="p-5 border-t border-[#E2E8F0] bg-slate-50/50">
+          <div className="p-5 border-t border-[#E2E8F0] bg-white/40 backdrop-blur-md/50">
             {report.hardcodedKeys.length > 0 ? (
               <div className="grid grid-cols-1 gap-3">
                 {report.hardcodedKeys.map((k, idx) => (
-                  <div key={idx} className="p-3.5 bg-white border border-[#E2E8F0] rounded-lg space-y-2">
+                  <div key={idx} className="p-3.5 bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded-lg space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-extrabold text-slate-700">{k.type}</span>
                       <span className="px-2 py-0.5 bg-[#DC2626]/10 text-[#DC2626] text-[9px] font-bold rounded font-mono uppercase">{k.risk}</span>
                     </div>
-                    <div className="p-2.5 bg-slate-50 rounded border border-[#E2E8F0] font-mono text-xs text-slate-600 break-all select-all">
+                    <div className="p-2.5 bg-white/40 backdrop-blur-md rounded border border-[#E2E8F0] font-mono text-xs text-slate-600 break-all select-all">
                       {k.key}
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="p-5 bg-white border border-[#E2E8F0] rounded-lg text-center">
+              <div className="p-5 bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded-lg text-center">
                 <CheckCircle className="h-8 w-8 text-[#16A34A] mx-auto mb-2" />
                 <p className="text-xs font-bold text-slate-600">No cryptographic secret leaks</p>
                 <p className="text-[11px] text-slate-400 mt-0.5">Scanning did not discover any hardcoded API keys, certificates or RSA credentials inside manifest resources.</p>
@@ -364,10 +364,10 @@ export default function StaticAnalysis({
       </div>
 
       {/* ACCORDION 6: Certificates */}
-      <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded-xl shadow-glass overflow-hidden">
         <button
           onClick={() => toggleAccordion('certificates')}
-          className="w-full p-4 flex items-center justify-between hover:bg-slate-50 transition-colors text-left font-bold"
+          className="w-full p-4 flex items-center justify-between hover:bg-white/40 backdrop-blur-md transition-colors text-left font-bold"
         >
           <div className="flex items-center space-x-3">
             <Award className="h-5 w-5 text-[#16A34A]" />
@@ -380,9 +380,9 @@ export default function StaticAnalysis({
         </button>
 
         {openAccordions.certificates && (
-          <div className="p-5 border-t border-[#E2E8F0] bg-slate-50/50">
-            <div className="p-4 bg-white border border-[#E2E8F0] rounded-lg space-y-4">
-              <div className="flex items-start justify-between flex-wrap gap-2 border-b border-slate-100 pb-3">
+          <div className="p-5 border-t border-[#E2E8F0] bg-white/40 backdrop-blur-md/50">
+            <div className="p-4 bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded-lg space-y-4">
+              <div className="flex items-start justify-between flex-wrap gap-2 border-b border-white/30 pb-3">
                 <div className="space-y-1">
                   <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold block">Issuer Certificate Authority</span>
                   <div className={`text-xs font-mono font-bold ${report.certInfo.issuer.includes('Bypass') || report.certInfo.issuer.includes('Unknown') ? 'text-[#DC2626]' : 'text-slate-800'}`}>
@@ -414,10 +414,10 @@ export default function StaticAnalysis({
       </div>
 
       {/* ACCORDION 7: Obfuscation */}
-      <div className="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded-xl shadow-glass overflow-hidden">
         <button
           onClick={() => toggleAccordion('obfuscation')}
-          className="w-full p-4 flex items-center justify-between hover:bg-slate-50 transition-colors text-left font-bold"
+          className="w-full p-4 flex items-center justify-between hover:bg-white/40 backdrop-blur-md transition-colors text-left font-bold"
         >
           <div className="flex items-center space-x-3">
             <Lock className="h-5 w-5 text-[#2563EB]" />
@@ -430,8 +430,8 @@ export default function StaticAnalysis({
         </button>
 
         {openAccordions.obfuscation && (
-          <div className="p-5 border-t border-[#E2E8F0] bg-slate-50/50">
-            <div className="p-4 bg-white border border-[#E2E8F0] rounded-lg grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="p-5 border-t border-[#E2E8F0] bg-white/40 backdrop-blur-md/50">
+            <div className="p-4 bg-white/20 backdrop-blur-xl border border-[#E2E8F0] rounded-lg grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
                   <span className="text-xs font-extrabold uppercase text-slate-500">Security Guard Status</span>
@@ -455,7 +455,7 @@ export default function StaticAnalysis({
                   <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold block">Identified Techniques</span>
                   <div className="flex flex-wrap gap-2">
                     {report.obfuscation.techniques.map((tech, idx) => (
-                      <span key={idx} className="px-2.5 py-1.5 bg-slate-100 border border-[#E2E8F0] rounded font-mono text-[10px] text-slate-700 font-bold">
+                      <span key={idx} className="px-2.5 py-1.5 bg-white/60 backdrop-blur-lg border border-[#E2E8F0] rounded font-mono text-[10px] text-slate-700 font-bold">
                         {tech}
                       </span>
                     ))}

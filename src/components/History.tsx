@@ -61,19 +61,19 @@ export default function History({
   return (
     <div className="space-y-6 font-sans text-[#0F172A]" id="assessment-history-page">
       {/* Title Header */}
-      <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm flex items-center justify-between">
+      <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass flex items-center justify-between">
         <div>
           <h2 className="text-xl font-extrabold tracking-tight">Binary Audit Log</h2>
           <p className="text-sm text-slate-500 mt-1">Audit complete historical scans, integrity checksum records, and generated threat metrics</p>
         </div>
-        <div className="flex items-center space-x-1 text-xs font-mono bg-slate-100 px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-slate-600 font-bold">
+        <div className="flex items-center space-x-1 text-xs font-mono bg-white/60 backdrop-blur-lg px-3 py-1.5 rounded-lg border border-[#E2E8F0] text-slate-600 font-bold">
           <Database className="h-3.5 w-3.5" />
           <span>RECORDS: {apkReports.length} SCAFFOLDED</span>
         </div>
       </div>
 
       {/* FILTER CONTROL BAR */}
-      <div className="p-4 bg-white rounded-xl border border-[#E2E8F0] shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="p-4 bg-white/20 backdrop-blur-xl rounded-xl border border-[#E2E8F0] shadow-glass flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center space-x-2">
           <HistoryIcon className="h-5 w-5 text-slate-400" />
           <span className="text-xs font-bold uppercase text-slate-600">Scan Repositories</span>
@@ -90,11 +90,11 @@ export default function History({
               placeholder="Search reports..."
               value={searchTerm}
               onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-              className="pl-9 pr-3 py-1.5 bg-slate-50 border border-[#E2E8F0] rounded-lg text-xs placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-[#2563EB] w-52"
+              className="pl-9 pr-3 py-1.5 bg-white/40 backdrop-blur-md border border-[#E2E8F0] rounded-lg text-xs placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-[#2563EB] w-52"
             />
           </div>
 
-          <div className="flex items-center space-x-1.5 bg-slate-50 px-2 py-1.5 border border-[#E2E8F0] rounded-lg">
+          <div className="flex items-center space-x-1.5 bg-white/40 backdrop-blur-md px-2 py-1.5 border border-[#E2E8F0] rounded-lg">
             <Filter className="h-3.5 w-3.5 text-slate-400" />
             <select
               value={riskFilter}
@@ -112,11 +112,11 @@ export default function History({
       </div>
 
       {/* MAIN DATA TABLE */}
-      <div className="bg-white rounded-xl border border-[#E2E8F0] shadow-sm overflow-hidden">
+      <div className="bg-white/20 backdrop-blur-xl rounded-xl border border-[#E2E8F0] shadow-glass overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-slate-50 border-b border-[#E2E8F0] text-slate-400 uppercase tracking-wider font-mono text-[10px]">
+              <tr className="bg-white/40 backdrop-blur-md border-b border-[#E2E8F0] text-slate-400 uppercase tracking-wider font-mono text-[10px]">
                 <th className="p-4 font-bold">Target Filename</th>
                 <th className="p-4 font-bold">Package ID</th>
                 <th className="p-4 font-bold text-center">Security Score</th>
@@ -129,7 +129,7 @@ export default function History({
             <tbody className="divide-y divide-[#E2E8F0]">
               {paginatedReports.length > 0 ? (
                 paginatedReports.map((report) => (
-                  <tr key={report.id} className="hover:bg-slate-50/50 transition-colors">
+                  <tr key={report.id} className="hover:bg-white/40 backdrop-blur-md/50 transition-colors">
                     <td className="p-4">
                       <div className="font-extrabold text-slate-800 tracking-tight break-all max-w-[200px]" title={report.filename}>
                         {report.filename}
@@ -166,28 +166,28 @@ export default function History({
                         <button
                           onClick={() => onSelectAPK(report.id, 'report')}
                           title="View Executive Report"
-                          className="p-1.5 text-slate-500 hover:text-[#2563EB] hover:bg-slate-100 rounded transition-colors cursor-pointer"
+                          className="p-1.5 text-slate-500 hover:text-[#2563EB] hover:bg-white/60 backdrop-blur-lg rounded transition-colors cursor-pointer"
                         >
                           <FileCheck className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => onSelectAPK(report.id, 'static')}
                           title="View Decompiled Manifest"
-                          className="p-1.5 text-slate-500 hover:text-[#F59E0B] hover:bg-slate-100 rounded transition-colors cursor-pointer"
+                          className="p-1.5 text-slate-500 hover:text-[#F59E0B] hover:bg-white/60 backdrop-blur-lg rounded transition-colors cursor-pointer"
                         >
                           <FileCode className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => onSelectAPK(report.id, 'dynamic')}
                           title="View Sandbox Trace"
-                          className="p-1.5 text-slate-500 hover:text-[#16A34A] hover:bg-slate-100 rounded transition-colors cursor-pointer"
+                          className="p-1.5 text-slate-500 hover:text-[#16A34A] hover:bg-white/60 backdrop-blur-lg rounded transition-colors cursor-pointer"
                         >
                           <Smartphone className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleDeleteClick(report.id, report.filename)}
                           title="Purge Record"
-                          className="p-1.5 text-slate-400 hover:text-[#DC2626] hover:bg-slate-100 rounded transition-colors cursor-pointer"
+                          className="p-1.5 text-slate-400 hover:text-[#DC2626] hover:bg-white/60 backdrop-blur-lg rounded transition-colors cursor-pointer"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -208,7 +208,7 @@ export default function History({
 
         {/* PAGINATION PANEL */}
         {totalPages > 1 && (
-          <div className="p-4 bg-slate-50 border-t border-[#E2E8F0] flex items-center justify-between text-xs">
+          <div className="p-4 bg-white/40 backdrop-blur-md border-t border-[#E2E8F0] flex items-center justify-between text-xs">
             <span className="text-slate-500">
               Showing Page <span className="font-semibold text-slate-700">{currentPage}</span> of <span className="font-semibold text-slate-700">{totalPages}</span> ({filteredReports.length} records)
             </span>
@@ -216,14 +216,14 @@ export default function History({
               <button
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                className="p-1.5 border border-[#E2E8F0] rounded hover:bg-white bg-slate-50 cursor-pointer disabled:opacity-40"
+                className="p-1.5 border border-[#E2E8F0] rounded hover:bg-white/20 backdrop-blur-xl bg-white/40 backdrop-blur-md cursor-pointer disabled:opacity-40"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                className="p-1.5 border border-[#E2E8F0] rounded hover:bg-white bg-slate-50 cursor-pointer disabled:opacity-40"
+                className="p-1.5 border border-[#E2E8F0] rounded hover:bg-white/20 backdrop-blur-xl bg-white/40 backdrop-blur-md cursor-pointer disabled:opacity-40"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>

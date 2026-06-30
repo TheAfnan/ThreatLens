@@ -12,6 +12,8 @@ import {
   HelpCircle
 } from 'lucide-react';
 import { APKReport, AIReport } from '../types';
+import { useAppStore } from '../lib/store';
+import { PaywallOverlay } from './PaywallOverlay';
 
 interface AIInvestigationProps {
   apkReports: APKReport[];
@@ -19,6 +21,7 @@ interface AIInvestigationProps {
   selectedAPKId: string | null;
   onSelectAPK: (id: string) => void;
   triggerToast: (title: string, message: string, type: 'info' | 'success' | 'warn' | 'error') => void;
+  onUpgrade?: () => void;
 }
 
 export default function AIInvestigation({
@@ -26,8 +29,11 @@ export default function AIInvestigation({
   aiReports,
   selectedAPKId,
   onSelectAPK,
-  triggerToast
+  triggerToast,
+  onUpgrade
 }: AIInvestigationProps) {
+  const { isProUser, useCredit, addToast } = useAppStore();
+
   const currentId = selectedAPKId || 'apk-01';
   const report = apkReports.find(r => r.id === currentId) || apkReports[0];
 
@@ -44,6 +50,12 @@ export default function AIInvestigation({
   const handleExecuteInvestigation = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!promptText.trim()) return;
+
+    if (!useCredit()) {
+      addToast({ title: 'Credit Depleted', description: 'You have run out of AI credits. Upgrade to Pro Max Ultra for unlimited investigations.', type: 'error' });
+      onUpgrade?.();
+      return;
+    }
 
     setIsLoading(true);
     triggerToast('Gemini API Dispatched', 'Contacting server-side model for decompiler telemetry...', 'info');
@@ -134,9 +146,17 @@ Report compiled by ThreatLens AI Core on ${new Date().toISOString().substring(0,
   };
 
   return (
-    <div className="space-y-6 font-sans text-[#0F172A]" id="ai-investigation-portal">
+    <div className="relative h-full flex flex-col">
+      {!isProUser && (
+        <PaywallOverlay 
+          featureName="AI Co-Pilot Integration"
+          description="Deep, real-time AI anomaly detection requires immense LLM compute. Upgrade to Premium to unlock automated exploit vector analysis and live security patching intelligence."
+          onUpgrade={() => onUpgrade?.()}
+        />
+      )}
+      <div className={`space-y-6 font-sans text-[#0F172A] ${!isProUser ? 'opacity-40 pointer-events-none select-none blur-sm' : ''}`} id="ai-investigation-portal">
       {/* Selector Header Bar */}
-      <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h2 className="text-xl font-extrabold tracking-tight flex items-center space-x-2">
             <Sparkles className="h-5.5 w-5.5 text-[#2563EB]" />
@@ -149,7 +169,7 @@ Report compiled by ThreatLens AI Core on ${new Date().toISOString().substring(0,
           <select 
             value={report.id}
             onChange={(e) => handleSelectAPKChange(e.target.value)}
-            className="px-3 py-2 bg-slate-50 border border-[#E2E8F0] rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:ring-1 focus:ring-[#2563EB] max-w-[280px]"
+            className="px-3 py-2 bg-white/40 backdrop-blur-md border border-[#E2E8F0] rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:ring-1 focus:ring-[#2563EB] max-w-[280px]"
           >
             {apkReports.map(r => (
               <option key={r.id} value={r.id}>{r.filename}</option>
@@ -160,7 +180,7 @@ Report compiled by ThreatLens AI Core on ${new Date().toISOString().substring(0,
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Chat prompt Left column */}
-        <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm space-y-5 h-fit">
+        <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass space-y-5 h-fit">
           <div className="space-y-1">
             <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-700 flex items-center space-x-1.5">
               <Terminal className="h-4 w-4 text-[#2563EB]" />
@@ -177,7 +197,7 @@ Report compiled by ThreatLens AI Core on ${new Date().toISOString().substring(0,
                 onChange={(e) => setPromptText(e.target.value)}
                 rows={5}
                 required
-                className="w-full p-3 bg-slate-50 border border-[#E2E8F0] rounded-xl text-xs font-semibold placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-[#2563EB] text-slate-800 resize-none leading-relaxed"
+                className="w-full p-3 bg-white/40 backdrop-blur-md border border-[#E2E8F0] rounded-xl text-xs font-semibold placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-[#2563EB] text-slate-800 resize-none leading-relaxed"
                 placeholder="Ask Gemini to extract specifics..."
               />
             </div>
@@ -185,7 +205,7 @@ Report compiled by ThreatLens AI Core on ${new Date().toISOString().substring(0,
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 bg-[#2563EB] hover:bg-[#2563EB]/90 disabled:bg-[#2563EB]/50 text-white text-xs font-bold uppercase tracking-widest rounded-lg shadow-sm transition-all flex items-center justify-center space-x-2 cursor-pointer"
+              className="w-full py-3 bg-[#2563EB] hover:bg-[#2563EB]/90 disabled:bg-[#2563EB]/50 text-white text-xs font-bold uppercase tracking-widest rounded-lg shadow-glass transition-all flex items-center justify-center space-x-2 cursor-pointer"
             >
               {isLoading ? (
                 <>
@@ -202,7 +222,7 @@ Report compiled by ThreatLens AI Core on ${new Date().toISOString().substring(0,
           </form>
 
           {/* Quick suggestions */}
-          <div className="space-y-2 pt-2 border-t border-slate-100">
+          <div className="space-y-2 pt-2 border-t border-white/30">
             <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold block flex items-center space-x-1">
               <HelpCircle className="h-3.5 w-3.5" />
               <span>Suggested Inquiries</span>
@@ -211,14 +231,14 @@ Report compiled by ThreatLens AI Core on ${new Date().toISOString().substring(0,
               <button
                 type="button"
                 onClick={() => setPromptText("Evaluate string encryption inside resources, extract hardcoded C2 decryption keys, and map API hooks.")}
-                className="w-full text-left p-2 hover:bg-slate-50 border border-slate-100 rounded text-[11px] font-semibold text-slate-600 truncate block cursor-pointer"
+                className="w-full text-left p-2 hover:bg-white/40 backdrop-blur-md border border-white/30 rounded text-[11px] font-semibold text-slate-600 truncate block cursor-pointer"
               >
                 Evaluate key extraction & obfuscation keys
               </button>
               <button
                 type="button"
                 onClick={() => setPromptText("Describe the persistence layers: how does the APK prevent manual settings disables and device admin uninstalls?")}
-                className="w-full text-left p-2 hover:bg-slate-50 border border-slate-100 rounded text-[11px] font-semibold text-slate-600 truncate block cursor-pointer"
+                className="w-full text-left p-2 hover:bg-white/40 backdrop-blur-md border border-white/30 rounded text-[11px] font-semibold text-slate-600 truncate block cursor-pointer"
               >
                 Describe persistence & uninstallation overrides
               </button>
@@ -227,8 +247,8 @@ Report compiled by ThreatLens AI Core on ${new Date().toISOString().substring(0,
         </div>
 
         {/* AI Report Output Right Column */}
-        <div className="bg-white p-5 rounded-xl border border-[#E2E8F0] shadow-sm lg:col-span-2 space-y-6 min-h-96">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="bg-white/20 backdrop-blur-xl p-5 rounded-xl border border-[#E2E8F0] shadow-glass lg:col-span-2 space-y-6 min-h-96">
+          <div className="flex items-center justify-between border-b border-white/30 pb-3">
             <div>
               <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-700">Gemini Security Intelligence Output</h3>
               <span className="text-xs text-slate-400">Verified malware execution profile</span>
@@ -236,7 +256,7 @@ Report compiled by ThreatLens AI Core on ${new Date().toISOString().substring(0,
             {currentAIReport && (
               <button
                 onClick={handleCopyReport}
-                className="px-3 py-1.5 bg-slate-100 hover:bg-[#2563EB] hover:text-white text-[11px] font-bold uppercase tracking-wider rounded border border-[#E2E8F0] transition-all flex items-center space-x-1 text-slate-700 cursor-pointer"
+                className="px-3 py-1.5 bg-white/60 backdrop-blur-lg hover:bg-[#2563EB] hover:text-white text-[11px] font-bold uppercase tracking-wider rounded border border-[#E2E8F0] transition-all flex items-center space-x-1 text-slate-700 cursor-pointer"
               >
                 {copied ? <Check className="h-3.5 w-3.5 text-[#16A34A]" /> : <Copy className="h-3.5 w-3.5" />}
                 <span>Copy Investigation</span>
@@ -247,33 +267,33 @@ Report compiled by ThreatLens AI Core on ${new Date().toISOString().substring(0,
           {/* Skeleton loading state */}
           {isLoading ? (
             <div className="space-y-6 animate-pulse">
-              <div className="p-4 bg-slate-50 rounded-xl space-y-3">
+              <div className="p-4 bg-white/40 backdrop-blur-md rounded-xl space-y-3">
                 <div className="h-4 bg-slate-200 rounded w-1/4" />
                 <div className="h-3 bg-slate-200 rounded w-full" />
                 <div className="h-3 bg-slate-200 rounded w-5/6" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="h-24 bg-slate-50 rounded-xl" />
-                <div className="h-24 bg-slate-50 rounded-xl" />
+                <div className="h-24 bg-white/40 backdrop-blur-md rounded-xl" />
+                <div className="h-24 bg-white/40 backdrop-blur-md rounded-xl" />
               </div>
-              <div className="h-40 bg-slate-50 rounded-xl" />
+              <div className="h-40 bg-white/40 backdrop-blur-md rounded-xl" />
             </div>
           ) : currentAIReport ? (
             <div className="space-y-6" id="ai-report-body">
               {/* Executive Purpose */}
-              <div className="p-4 bg-slate-50 rounded-xl border border-[#E2E8F0] space-y-1.5">
+              <div className="p-4 bg-white/40 backdrop-blur-md rounded-xl border border-[#E2E8F0] space-y-1.5">
                 <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest font-bold block">1. Security Overview & Intended Purpose</span>
                 <p className="text-xs text-slate-700 leading-relaxed font-semibold">{currentAIReport.purpose}</p>
               </div>
 
               {/* Grid mechanics */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-4 bg-slate-50 border border-[#E2E8F0] rounded-xl space-y-1.5">
+                <div className="p-4 bg-white/40 backdrop-blur-md border border-[#E2E8F0] rounded-xl space-y-1.5">
                   <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest font-bold block">Malware Family Model</span>
                   <div className="text-sm font-extrabold text-[#DC2626] font-mono">{currentAIReport.malwareFamily}</div>
                 </div>
 
-                <div className="p-4 bg-slate-50 border border-[#E2E8F0] rounded-xl space-y-1.5">
+                <div className="p-4 bg-white/40 backdrop-blur-md border border-[#E2E8F0] rounded-xl space-y-1.5">
                   <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest font-bold block">Assessor Confidence</span>
                   <div className="text-sm font-extrabold text-[#2563EB] font-mono">{currentAIReport.confidence}</div>
                 </div>
@@ -310,28 +330,29 @@ Report compiled by ThreatLens AI Core on ${new Date().toISOString().substring(0,
                 {/* Network, Persistence & Obfuscation */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
                   <div className="space-y-1">
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold block border-b border-slate-100 pb-1">Network C2</span>
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold block border-b border-white/30 pb-1">Network C2</span>
                     <p className="text-[11px] text-slate-500 leading-relaxed">{currentAIReport.networkBehaviour}</p>
                   </div>
                   <div className="space-y-1">
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold block border-b border-slate-100 pb-1">Persistence</span>
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold block border-b border-white/30 pb-1">Persistence</span>
                     <p className="text-[11px] text-slate-500 leading-relaxed">{currentAIReport.persistence}</p>
                   </div>
                   <div className="space-y-1">
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold block border-b border-slate-100 pb-1">Obfuscation</span>
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold block border-b border-white/30 pb-1">Obfuscation</span>
                     <p className="text-[11px] text-slate-500 leading-relaxed">{currentAIReport.obfuscation}</p>
                   </div>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="h-full flex flex-col items-center justify-center text-center p-6 bg-slate-50 rounded-xl border border-dashed border-[#E2E8F0]">
+            <div className="h-full flex flex-col items-center justify-center text-center p-6 bg-white/40 backdrop-blur-md rounded-xl border border-dashed border-[#E2E8F0]">
               <Sparkles className="h-10 w-10 text-slate-300 mb-2" />
               <p className="text-sm font-bold text-slate-600">Pending Decompilation Analysis</p>
               <p className="text-xs text-slate-400 max-w-sm mt-1">Please select an APK model or submit a prompt inquiry to decompile and draft the cybersecurity overview.</p>
             </div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );
