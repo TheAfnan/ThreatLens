@@ -386,7 +386,7 @@ export default function LandingPage({
           </div>
 
           {/* Middle Section: Links */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-12 mb-16">
             <div className="col-span-1 md:col-span-1">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="relative flex items-center justify-center w-12 h-12 rounded-xl bg-white/20 backdrop-blur-[20px] border border-white/40 shadow-[0_8px_32px_rgba(29,78,216,0.3)] overflow-hidden">
@@ -427,6 +427,15 @@ export default function LandingPage({
                 <li><button onClick={() => onNavigateToLegal?.('privacy')} className="hover:text-blue-700 hover:translate-x-1 transition-all flex items-center">Privacy Policy</button></li>
                 <li><button onClick={() => onNavigateToLegal?.('terms')} className="hover:text-blue-700 hover:translate-x-1 transition-all flex items-center">Terms of Service</button></li>
                 <li><a href="#" className="hover:text-blue-700 hover:translate-x-1 transition-all flex items-center">Compliance</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="text-slate-900 font-bold mb-6 text-[12px] uppercase tracking-widest">Contact</h4>
+              <ul className="space-y-4 text-[13px] font-semibold text-slate-700">
+                <li><a href="mailto:aithreatlens@gmail.com" className="hover:text-blue-700 hover:translate-x-1 transition-all flex items-center">aithreatlens@gmail.com</a></li>
+                <li><a href="tel:8303536986" className="hover:text-blue-700 hover:translate-x-1 transition-all flex items-center">+91 8303536986</a></li>
+                <li><span className="flex items-center">Available 24/7 for support</span></li>
               </ul>
             </div>
           </div>
