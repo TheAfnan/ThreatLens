@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { auth } from './lib/firebase';
-import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut as firebaseSignOut, User } from 'firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut as firebaseSignOut, User, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './components/Logo';
 
@@ -41,6 +41,21 @@ const LoginModal = ({ onClose }: { onClose: () => void }) => {
       if (message.includes('auth/invalid-credential')) message = 'Invalid email or password.';
       if (message.includes('auth/email-already-in-use')) message = 'An account with this email already exists.';
       if (message.includes('auth/weak-password')) message = 'Password must be at least 6 characters.';
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError('');
+    setLoading(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+    } catch (err: any) {
+      let message = err.message;
+      if (err.code === 'auth/popup-closed-by-user') message = 'Google sign-in was cancelled.';
       setError(message);
     } finally {
       setLoading(false);
@@ -132,6 +147,27 @@ const LoginModal = ({ onClose }: { onClose: () => void }) => {
               {loading ? 'Authenticating...' : (isLogin ? 'Sign In' : 'Create Account')}
             </button>
           </form>
+
+          <div className="relative my-6 flex items-center py-2">
+            <div className="flex-grow border-t border-white/10"></div>
+            <span className="flex-shrink mx-4 text-xs text-slate-500 uppercase tracking-widest">Or continue with</span>
+            <div className="flex-grow border-t border-white/10"></div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            disabled={loading}
+            className="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold py-3.5 rounded-xl transition-all disabled:opacity-50 flex items-center justify-center space-x-2 text-[13px]"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 24c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 21.53 7.7 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.84 15.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V8.06H2.18C1.43 9.55 1 11.22 1 13s.43 3.45 1.18 4.94l3.66-2.84z"/>
+              <path fill="#EA4335" d="M12 4.64c1.61 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.19 14.97 0 12 0 7.7 0 3.99 2.47 2.18 6.06l3.66 2.84c.87-2.6 3.3-4.26 6.16-4.26z"/>
+            </svg>
+            <span>Google</span>
+          </button>
           
           <div className="mt-8 text-center border-t border-white/5 pt-6">
             <button 

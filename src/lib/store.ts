@@ -36,8 +36,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   })),
 
   // Monetization State
-  isProUser: false,
-  credits: 5, // Free users start with 5 AI credits
+  isProUser: true,
+  credits: 9999, // Free users start with 5 AI credits
   upgradeToPro: () => set({ isProUser: true, credits: 9999 }),
   useCredit: () => {
     const state = get();
